@@ -1,0 +1,7 @@
+[package]
+name = "ewts-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ewts-lib = { path = "../ewts-lib" }
