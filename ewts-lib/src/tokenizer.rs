@@ -1,12 +1,16 @@
 use std::collections::HashMap;
 
-use crate::dict::{Con, Sym, Vowel, CONSONANTS, CONS_LEN, SYM, SYM_LEN, VOWELS, VOWELS_LEN};
+use crate::dict::{
+    Con, ConSpec, Final, Sym, Vowel, CONSONANTS, CONS_LEN, CON_SPEC, FINALS, SYM, SYM_LEN, VOWELS, VOWELS_LEN,
+};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub(crate) enum Token {
     Con(Con),
     Vowel(Vowel),
     Sym(Sym),
+    Final(Final),
+    ConSpec(ConSpec),
     Unknown(u8),
 }
 
@@ -15,7 +19,6 @@ pub(crate) struct EwtsToUnicodeTokenizer<'a> {
     ind: usize,
     src_len: usize,
     src_bytes: &'a [u8],
-    result: Vec<Token>,
 }
 
 impl<'a> EwtsToUnicodeTokenizer<'a> {
@@ -27,19 +30,21 @@ impl<'a> EwtsToUnicodeTokenizer<'a> {
             ind: 0,
             src_len: src_bytes.len(),
             src_bytes,
-            result: Vec::with_capacity(src_bytes.len()),
         };
 
         tokenizer.into_tokens()
     }
 
     fn into_tokens(mut self) -> Vec<Token> {
+        let mut result = Vec::with_capacity(self.src_len);
+
         while self.is_in_bounds() {
             let (tkn, len) = self.find_next();
-            self.result.push(tkn);
+            result.push(tkn);
             self.ind += len;
         }
-        self.result
+
+        result
     }
 
     fn is_in_bounds(&self) -> bool {
@@ -84,6 +89,8 @@ impl EwtsToUnicodeTokenMap {
         map.fill_with(CONSONANTS.iter().map(|c| (Token::Con(c.0), c.1)).collect());
         map.fill_with(VOWELS.iter().map(|v| (Token::Vowel(v.0), v.1)).collect());
         map.fill_with(SYM.iter().map(|s| (Token::Sym(s.0), s.1)).collect());
+        map.fill_with(CON_SPEC.iter().map(|c| (Token::ConSpec(c.0), c.1)).collect());
+        map.fill_with(FINALS.iter().map(|f| (Token::Final(f.0), f.1)).collect());
         map
     }
 
@@ -155,7 +162,7 @@ mod tests {
                 Token::Con(Con::R),
                 Token::Con(Con::G),
                 Token::Con(Con::Y),
-                Token::Vowel(Vowel::A),
+                Token::Con(Con::AChen),
                 Token::Con(Con::S),
                 Token::Con(Con::MinusTh),
                 Token::Con(Con::H),

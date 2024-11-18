@@ -1,6 +1,8 @@
-pub(crate) const CONS_LEN: usize = 54;
-pub(crate) const VOWELS_LEN: usize = 12;
+pub(crate) const CONS_LEN: usize = 55;
+pub(crate) const VOWELS_LEN: usize = 11;
 pub(crate) const SYM_LEN: usize = 28;
+pub(crate) const FINALS_LEN: usize = 8;
+pub(crate) const CON_SPEC_LEN: usize = 3;
 
 pub(crate) static CONSONANTS: [(Con, &str, &str, &str); CONS_LEN] = [
     (Con::K, "k", "\u{0f40}", "\u{0f90}"),
@@ -54,13 +56,13 @@ pub(crate) static CONSONANTS: [(Con, &str, &str, &str); CONS_LEN] = [
     (Con::MinusSh, "-sh", "\u{0f65}", "\u{0fb5}"),
     (Con::S, "s", "\u{0f66}", "\u{0fb6}"),
     (Con::H, "h", "\u{0f67}", "\u{0fb7}"),
+    (Con::AChen, "a", "\u{0f68}", "\u{0fb8}"),
     (Con::WBig, "W", "\u{0f5d}", "\u{0fba}"),
     (Con::YBig, "Y", "\u{0f61}", "\u{0fbb}"),
     (Con::RBig, "R", "\u{0f6a}", "\u{0fbc}"),
 ];
 
 pub(crate) static VOWELS: [(Vowel, &str, &str); VOWELS_LEN] = [
-    (Vowel::A, "a", "\u{0f68}"),
     (Vowel::ABig, "A", "\u{0f71}"),
     (Vowel::I, "i", "\u{0f72}"),
     (Vowel::IBig, "I", "\u{0f71}\u{0f72}"),
@@ -105,14 +107,145 @@ pub(crate) static SYM: [(Sym, &str, &str); SYM_LEN] = [
     (Sym::Percent, "%", "\u{0f07}"),
 ];
 
-// special sanskrit vowels
+pub(crate) static FINALS: [(Final, &str, &str); FINALS_LEN] = [
+    (Final::Anusvara, "M", "\u{0f7e}"),
+    (Final::NadaBindu, "~M`", "\u{0f82}"),
+    (Final::ChandraBindu, "~M", "\u{0f83}"),
+    (Final::Nuqta, "X", "\u{0f37}"),
+    (Final::ChandraNuqta, "~X", "\u{0f35}"),
+    (Final::Visarga, "H", "\u{0f7f}"),
+    (Final::Halanta, "?", "\u{0f84}"),
+    (Final::TsaPhru, "^", "\u{0f39}"),
+];
+
+pub(crate) static CON_SPEC: [(ConSpec, &str, &str); CON_SPEC_LEN] = [
+    (ConSpec::F, "f", "\u{0f55}\u{0f39}"),
+    (ConSpec::V, "v", "\u{0f56}\u{0f39}"),
+    (ConSpec::Paluta, "&", "\u{0f85}"),
+];
+
+type Combinations<'a> = &'a [(
+    Con,              // sup or sub
+    &'a [Con],        // combination with one
+    &'a [(Con, Con)], // with two
+)];
+
+#[rustfmt::skip]
+static SUPERSCRIPTS: Combinations<'static> = &[
+    // (["k","g","ng","j","ny","t","d","n","b","m","ts","dz" ||| "k+y","g+y","m+y","b+w","ts+w","g+w"])
+    (
+        Con::R,
+        &[
+            Con::K, Con::G, Con::Ng, Con::J, Con::Ny, Con::T, Con::D, Con::N, Con::B, Con::M, Con::Ts, Con::Dz,
+        ],
+        &[
+            (Con::K, Con::Y),
+            (Con::G, Con::Y),
+            (Con::M, Con::Y),
+            (Con::B, Con::W),
+            (Con::Ts, Con::W),
+            (Con::G, Con::W),
+        ],
+    ),
+    //
+    // (["k","g","ng","c","j","t","d","p","b","h"])
+    (
+        Con::L,
+        &[
+            Con::K, Con::G, Con::Ng, Con::C, Con::J, Con::T, Con::D, Con::P, Con::B, Con::H,
+        ],
+        &[],
+    ),
+    //
+    //  ([
+    //      "k","g","ng","ny","t","d","n","p","b","m","ts" 
+    //      ||| 
+    //      "k+y","g+y","p+y","b+y","m+y","k+r","g+r","p+r","b+r","m+r","n+r"
+    //  ])
+    (
+        Con::S,
+        &[
+            Con::K, Con::G, Con::Ng, Con::Ny, Con::T, Con::D, Con::N, Con::P, Con::B, Con::M, Con::Ts,
+        ],
+        &[
+            (Con::K, Con::Y),
+            (Con::G, Con::Y),
+            (Con::P, Con::Y),
+            (Con::B, Con::Y),
+            (Con::M, Con::Y),
+            (Con::K, Con::R),
+            (Con::G, Con::R),
+            (Con::P, Con::R),
+            (Con::B, Con::R),
+            (Con::M, Con::R),
+            (Con::N, Con::R),
+        ],
+    ),
+];
+
+#[rustfmt::skip]
+static SUBSCRIPTS: Combinations<'static> = &[
+    // (["k","kh","g","p","ph","b","m" ||| "r+k","r+g","r+m","s+k","s+g","s+p","s+b","s+m"])
+    (
+        Con::Y,
+        &[
+            Con::K, Con::Kh, Con::G, Con::P, Con::Ph, Con::B, Con::M
+        ],
+        &[
+            (Con::R, Con::K),
+            (Con::R, Con::G),
+            (Con::R, Con::M),
+            (Con::S, Con::K),
+            (Con::S, Con::G),
+            (Con::S, Con::P),
+            (Con::S, Con::B),
+            (Con::S, Con::M),
+        ],
+    ),
+    // (["k","kh","g","t","th","d","n","p","ph","b","m","sh","s","h","dz" ||| "s+k","s+g","s+p","s+b","s+m","s+n"])
+    (
+        Con::R,
+        &[
+            Con::K, Con::Kh, Con::G, Con::T, Con::Th, Con::D, Con::N, Con::P, Con::Ph, Con::B, Con::M, Con::Sh, Con::S, Con::H, Con::Dz,
+        ],
+        &[
+            (Con::S, Con::K),
+            (Con::S, Con::G),
+            (Con::S, Con::P),
+            (Con::S, Con::B),
+            (Con::S, Con::M),
+            (Con::S, Con::N),
+        ]
+    ),
+    // (["k","g","b","r","s","z"])
+    (
+        Con::L, 
+        &[
+            Con::K, Con::G, Con::B, Con::R, Con::S, Con::Z
+        ],
+        &[]
+    ),
+    // (["k","kh","g","c","ny","t","d","ts","tsh","zh","z","r","l","sh","s","h" ||| "g+r","d+r","ph+y","r+g","r+ts"])
+    (
+        Con::W,
+        &[
+            Con::K, Con::Kh, Con::G, Con::C, Con::Ny, Con::T, Con::D, Con::Ts, Con::Tsh, Con::Zh, Con::Z, Con::R, Con::L, Con::Sh, Con::S, Con::H,
+        ],
+        &[
+            (Con::G, Con::R),
+            (Con::D, Con::R),
+            (Con::Ph, Con::Y),
+            (Con::R, Con::G),
+            (Con::R, Con::Ts),
+        ]
+    ),
+];
+
 // TODO: del?
 //static VOW_R_MINUS_I: (&str, &str) = ("r-i", "\u{0fb2}\u{0f80}");
 //static VOW_R_MINUS_I_BIG: (&str, &str) = ("r-I", "\u{0fb2}\u{0f71}\u{0f80}");
 //static VOW_L_MINUS_I: (&str, &str) = ("l-i", "\u{0fb3}\u{0f80}");
 //static VOW_L_MINUS_I_BIG: (&str, &str) = ("l-I", "\u{0fb3}\u{0f71}\u{0f80}");
-//
-//
 //
 
 //#[derive(PartialEq, Eq, Hash, Clone)]
@@ -170,17 +303,14 @@ pub(crate) enum Con {
     MinusSh,
     S,
     H,
+    AChen,
     WBig,
     YBig,
     RBig,
 }
 
-impl Con {}
-
-//todo: remove Debug,
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Vowel {
-    A,
     ABig,
     I,
     IBig,
@@ -193,8 +323,6 @@ pub(crate) enum Vowel {
     MinusI,
     MinusIBig,
 }
-
-impl Vowel {}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Sym {
@@ -228,22 +356,21 @@ pub(crate) enum Sym {
     Percent,
 }
 
-// TODO: special
-//static CON_F: (&str, &str) = ("f", "\u{0f55}\u{0f39}");
-//static CON_V: (&str, &str) = ("v", "\u{0f56}\u{0f39}");
-//static SUB_A: (&str, &str) = ("a", "\u{0fb8}");
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Final {
+    Anusvara,
+    NadaBindu,
+    ChandraBindu,
+    Nuqta,
+    ChandraNuqta,
+    Visarga,
+    Halanta,
+    TsaPhru,
+}
 
-//
-//// stuff that can come after the vowel
-//// symbol => [ unicode, class ]  (cannot have more than 1 of the same class in the same stack)
-//static finals = {
-//  "M": [ "\u0f7e", "M" ],   // anusvara / bindu / circle above / nga ro
-//  "~M`": [ "\u0f82", "M" ], // crescent, bindu & nada
-//  "~M": [ "\u0f83", "M" ],  // crescent & bindu
-//  "X": [ "\u0f37", "X" ],   // small circle under
-//  "~X": [ "\u0f35", "X" ],  // small circle w/ crescent under
-//  "H": [ "\u0f7f", "H" ],   // visarga / rnam bcad
-//  "?": [ "\u0f84", "?" ],   // halanta / srog med
-//  "^": [ "\u0f39", "^" ],   // tsa-phru
-//  "&": [ "\u0f85", "&" ],   // paluta / avagraha
-//};
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum ConSpec {
+    F,
+    V,
+    Paluta,
+}

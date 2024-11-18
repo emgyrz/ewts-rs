@@ -1,6 +1,8 @@
 mod dict;
 mod tokenizer;
+mod converter;
 
+use converter::EwtsToUnicodeConverter;
 use tokenizer::{EwtsToUnicodeTokenMap, EwtsToUnicodeTokenizer};
 
 pub struct EwtsConverter {
@@ -16,8 +18,9 @@ impl EwtsConverter {
 
     pub fn ewts_to_unicode(&self, src: &str) -> String {
         let tokens = EwtsToUnicodeTokenizer::tokenize(&self.ewts_to_unicode_tokens_map, src);
+        let result = EwtsToUnicodeConverter::convert_outer(&tokens);
         // TODO
-        format!("{:?}",tokens)
+        result
     }
 }
 
@@ -66,7 +69,7 @@ grwa drwa phywa
         let converter = EwtsConverter::create();
 
         TST_DATA.iter().for_each(|td| {
-            //assert_eq!(converter.ewts_to_unicode(td.0), td.1);
+            assert_eq!(converter.ewts_to_unicode(td.0), td.1);
         });
     }
 }
