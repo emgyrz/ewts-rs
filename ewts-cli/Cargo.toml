@@ -11,4 +11,4 @@ homepage.workspace = true
 
 [dependencies]
 clap = { version = "4.5.21", features = ["derive"] }
-ewts-lib = { path = "../ewts-lib" }
+ewts = { path = "../ewts" }

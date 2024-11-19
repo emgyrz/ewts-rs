@@ -3,7 +3,7 @@
 resolver = "2"
 members = [
   "ewts-cli",
-  "ewts-lib",
+  "ewts",
 ]
 
 [workspace.package]

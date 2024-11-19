@@ -1,5 +1,5 @@
 use clap::Parser;
-use ewts_lib::EwtsConverter;
+use ewts::EwtsConverter;
 use std::fmt::Display;
 
 #[derive(clap::ValueEnum, Debug, Clone)]
