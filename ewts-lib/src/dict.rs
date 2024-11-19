@@ -2,7 +2,7 @@ pub(crate) const CONS_LEN: usize = 55;
 pub(crate) const VOWELS_LEN: usize = 11;
 pub(crate) const SYM_LEN: usize = 28;
 pub(crate) const FINALS_LEN: usize = 8;
-pub(crate) const CON_SPEC_LEN: usize = 3;
+pub(crate) const CON_SPEC_LEN: usize = 5;
 
 pub(crate) static CONSONANTS: [(Con, &str, &str, &str); CONS_LEN] = [
     (Con::K, "k", "\u{0f40}", "\u{0f90}"),
@@ -10,7 +10,7 @@ pub(crate) static CONSONANTS: [(Con, &str, &str, &str); CONS_LEN] = [
     (Con::G, "g", "\u{0f42}", "\u{0f92}"),
     (Con::Gh, "gh", "\u{0f42}\u{0fb7}", "\u{0f92}\u{0fb7}"),
     (Con::GPlusH, "g+h", "\u{0f42}\u{0fb7}", "\u{0f92}\u{0fb7}"),
-    (Con::Ng, "ng ", "\u{0f44}", "\u{0f94}"),
+    (Con::Ng, "ng", "\u{0f44}", "\u{0f94}"),
     (Con::C, "c", "\u{0f45}", "\u{0f95}"),
     (Con::Ch, "ch", "\u{0f46}", "\u{0f96}"),
     (Con::J, "j", "\u{0f47}", "\u{0f97}"),
@@ -94,7 +94,7 @@ pub(crate) static SYM: [(Sym, &str, &str); SYM_LEN] = [
     (Sym::Semicolon, ";", "\u{0f0f}"),
     (Sym::Bar, "|", "\u{0f11}"),
     (Sym::ExclamMark, "!", "\u{0f08}"),
-    (Sym::Colon, ",", "\u{0f14}"),
+    (Sym::Colon, ":", "\u{0f14}"),
     (Sym::Underscore, "_", " "),
     (Sym::Equal, "=", "\u{0f34}"),
     (Sym::Less, "<", "\u{0f3a}"),
@@ -122,6 +122,8 @@ pub(crate) static CON_SPEC: [(ConSpec, &str, &str); CON_SPEC_LEN] = [
     (ConSpec::F, "f", "\u{0f55}\u{0f39}"),
     (ConSpec::V, "v", "\u{0f56}\u{0f39}"),
     (ConSpec::Paluta, "&", "\u{0f85}"),
+    (ConSpec::Plus, "+", ""),
+    (ConSpec::Period, ".", ""),
 ];
 
 type Combinations<'a> = &'a [(
@@ -373,4 +375,6 @@ pub(crate) enum ConSpec {
     F,
     V,
     Paluta,
+    Plus,
+    Period,
 }

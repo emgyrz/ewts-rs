@@ -14,6 +14,19 @@ pub(crate) enum Token {
     Unknown(u8),
 }
 
+
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub(crate) enum TokenType {
+    Con,
+    Vowel,
+    ConSpec,
+
+    // TODO: unite to Other?
+    Sym,
+    Final,
+    Unknown,
+}
+
 pub(crate) struct EwtsToUnicodeTokenizer<'a> {
     map: &'a EwtsToUnicodeTokenMap,
     ind: usize,
@@ -146,8 +159,15 @@ mod tests {
 
     static TST_DATA: &[(&str, &[Token])] = &[
         ("dz+h", &[Token::Con(Con::DzPlusH)]),
-        ("dz+gh", &[Token::Con(Con::Dz), Token::Unknown(43), Token::Con(Con::Gh)]),
+        (
+            "dz+gh",
+            &[Token::Con(Con::Dz), Token::ConSpec(ConSpec::Plus), Token::Con(Con::Gh)],
+        ),
         ("yry", &[Token::Con(Con::Y), Token::Con(Con::R), Token::Con(Con::Y)]),
+        (
+            "rnga",
+            &[Token::Con(Con::R), Token::Con(Con::Ng), Token::Con(Con::AChen)],
+        ),
         (
             "kg g+h dz+h brgyas-thh-T",
             &[

@@ -1,6 +1,6 @@
+mod converter;
 mod dict;
 mod tokenizer;
-mod converter;
 
 use converter::EwtsToUnicodeConverter;
 use tokenizer::{EwtsToUnicodeTokenMap, EwtsToUnicodeTokenizer};
@@ -18,12 +18,9 @@ impl EwtsConverter {
 
     pub fn ewts_to_unicode(&self, src: &str) -> String {
         let tokens = EwtsToUnicodeTokenizer::tokenize(&self.ewts_to_unicode_tokens_map, src);
-        let result = EwtsToUnicodeConverter::convert_outer(&tokens);
-        // TODO
-        result
+        EwtsToUnicodeConverter::convert(&tokens)
     }
 }
-
 
 /////
 /////
@@ -34,8 +31,9 @@ impl EwtsConverter {
 mod tests {
     use super::*;
 
-    static TST_DATA: &[(&str, &str)] = &[(
-        r#"
+    static TST_DATA: &[(&str, &str)] = &[
+        (
+            r#"
 rka rga rnga rja rnya rta rda rna rba rma rtsa rdza 
 lka lga lnga lca lja lta lda lpa lba lha 
 ska sga snga snya sta sda sna spa sba sma stsa 
@@ -48,8 +46,8 @@ rkya rgya rmya rgwa rtswa
 skya sgya spya sbya smya 
 skra sgra snra spra sbra smra 
 grwa drwa phywa 
-        "#,
-        r#"
+"#,
+            r#"
 རྐ་རྒ་རྔ་རྗ་རྙ་རྟ་རྡ་རྣ་རྦ་རྨ་རྩ་རྫ་
 ལྐ་ལྒ་ལྔ་ལྕ་ལྗ་ལྟ་ལྡ་ལྤ་ལྦ་ལྷ་
 སྐ་སྒ་སྔ་སྙ་སྟ་སྡ་སྣ་སྤ་སྦ་སྨ་སྩ་
@@ -62,8 +60,20 @@ grwa drwa phywa
 སྐྱ་སྒྱ་སྤྱ་སྦྱ་སྨྱ་
 སྐྲ་སྒྲ་སྣྲ་སྤྲ་སྦྲ་སྨྲ་
 གྲྭ་དྲྭ་ཕྱྭ་
-        "#,
-    )];
+"#,
+        ),
+        ("rgyi", "རྒྱི"),
+        (
+            "oM aHhU~M` badz+ra gu ru pad+ma sid+d+hi hU~M`:",
+            "ཨོཾ་ཨཿཧཱུྂ་བཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྂ༔",
+        ),
+        ("g.yeng gyeng ", "གཡེང་གྱེང་"),
+        //(
+        //    "@#/_/sangs rgyas chos dang tshogs kyi mchog rnams la/_/byang chub bar du bdag ni skyabs su mchi/_/bdag gyis spyin sogs bgyis pa'i bsod nams kyis/_/'gro la phan phyir sangs rgyas 'grub par shog_!",
+        //    "༄༅། །སངས་རྒྱས་ཆོས་དང་ཚོགས་ཀྱི་མཆོག་རྣམས་ལ། །བྱང་ཆུབ་བར་དུ་བདག་ནི་སྐྱབས་སུ་མཆི། །བདག་གྱིས་སྤྱིན་སོགས་བགྱིས་པའི་བསོད་ནམས་ཀྱིས། །འགྲོ་ལ་ཕན་ཕྱིར་སངས་རྒྱས་འགྲུབ་པར་ཤོག ༈"
+        //),
+    ];
+
     #[test]
     fn ewts_to_unicode_converting_test() {
         let converter = EwtsConverter::create();
@@ -73,4 +83,3 @@ grwa drwa phywa
         });
     }
 }
-
