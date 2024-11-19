@@ -5,3 +5,10 @@ members = [
   "ewts-cli",
   "ewts-lib",
 ]
+
+[workspace.package]
+edition = "2021"
+authors = ["Maxim Zommer <emgyrz@gmail.com>"]
+repository = "https://github.com/emgyrz/ewts-rs"
+homepage = "https://github.com/emgyrz/ewts-rs"
+

@@ -1,7 +1,14 @@
 [package]
 name = "ewts-cli"
 version = "0.1.0"
-edition = "2021"
+description = "Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols (cli)"
+categories = ["text-processing", "converter", "encoding", "localization", "command-line-utilities"]
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
 
 [dependencies]
+clap = { version = "4.5.21", features = ["derive"] }
 ewts-lib = { path = "../ewts-lib" }
