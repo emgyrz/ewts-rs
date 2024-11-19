@@ -2,7 +2,7 @@
 name = "ewts-cli"
 version = "0.1.0"
 description = "Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols (cli)"
-categories = ["text-processing", "converter", "encoding", "localization", "command-line-utilities"]
+categories = ["text-processing", "internationalization", "encoding", "localization", "command-line-utilities"]
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
