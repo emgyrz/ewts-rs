@@ -1,8 +1,5 @@
+use crate::dict::{Con, ConSpec, Final, Sym, Vowel};
 use std::collections::HashMap;
-
-use crate::dict::{
-    Con, ConSpec, Final, Sym, Vowel, CONSONANTS, CONS_LEN, CON_SPEC, FINALS, SYM, SYM_LEN, VOWELS, VOWELS_LEN,
-};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub(crate) enum Token {
@@ -13,7 +10,6 @@ pub(crate) enum Token {
     ConSpec(ConSpec),
     Unknown(u8),
 }
-
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub(crate) enum TokenType {
@@ -99,11 +95,16 @@ pub(crate) struct EwtsToUnicodeTokenMap {
 impl EwtsToUnicodeTokenMap {
     pub(crate) fn create() -> Self {
         let mut map = EwtsToUnicodeTokenMap::new();
-        map.fill_with(CONSONANTS.iter().map(|c| (Token::Con(c.0), c.1)).collect());
-        map.fill_with(VOWELS.iter().map(|v| (Token::Vowel(v.0), v.1)).collect());
-        map.fill_with(SYM.iter().map(|s| (Token::Sym(s.0), s.1)).collect());
-        map.fill_with(CON_SPEC.iter().map(|c| (Token::ConSpec(c.0), c.1)).collect());
-        map.fill_with(FINALS.iter().map(|f| (Token::Final(f.0), f.1)).collect());
+        map.fill_with(Con::list().iter().map(|c| (Token::Con(*c), c.get().0)).collect());
+        map.fill_with(Vowel::list().iter().map(|v| (Token::Vowel(*v), v.get().0)).collect());
+        map.fill_with(Sym::list().iter().map(|s| (Token::Sym(*s), s.get().0)).collect());
+        map.fill_with(Final::list().iter().map(|f| (Token::Final(*f), f.get().0)).collect());
+        map.fill_with(
+            ConSpec::list()
+                .iter()
+                .map(|s| (Token::ConSpec(*s), s.get().0))
+                .collect(),
+        );
         map
     }
 
@@ -111,7 +112,7 @@ impl EwtsToUnicodeTokenMap {
         EwtsToUnicodeTokenMap {
             root: EwtsChar {
                 token: None,
-                nodes: HashMap::with_capacity(CONS_LEN + VOWELS_LEN + SYM_LEN),
+                nodes: HashMap::with_capacity(81),
             },
         }
     }

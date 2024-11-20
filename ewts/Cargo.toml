@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols (lib)"
 categories = ["text-processing", "internationalization", "encoding", "localization"]
 authors.workspace = true
+keywords.workspace = true
 edition.workspace = true
 repository.workspace = true
 homepage.workspace = true

@@ -1,23 +1,25 @@
-use crate::dict::{Con, ConSpec, CONSONANTS, CON_SPEC, FINALS, SYM, VOWELS};
-use crate::tokenizer::{Token,TokenType};
+use crate::dict::{Con, ConSpec};
+use crate::tokenizer::{Token, TokenType};
 
 pub(crate) struct EwtsToUnicodeConverter<'a> {
+    maps: &'a EwtsToUnicodeConverterMaps,
     ind: usize,
     tokens: &'a [Token],
     tokens_len: usize,
 }
 
 impl<'a> EwtsToUnicodeConverter<'a> {
-    fn new(tokens: &'a [Token]) -> Self {
+    fn new(maps: &'a EwtsToUnicodeConverterMaps, tokens: &'a [Token]) -> Self {
         EwtsToUnicodeConverter {
+            maps,
             ind: 0,
             tokens,
             tokens_len: tokens.len(),
         }
     }
 
-    pub(crate) fn convert(tokens: &'a [Token]) -> String {
-        let converter = EwtsToUnicodeConverter::new(tokens);
+    pub(crate) fn convert(maps: &EwtsToUnicodeConverterMaps, tokens: &'a [Token]) -> String {
+        let converter = EwtsToUnicodeConverter::new(maps, tokens);
         converter.run()
     }
 
@@ -26,7 +28,7 @@ impl<'a> EwtsToUnicodeConverter<'a> {
 
         //println!("tokens_len {} ", self.tokens_len);
 
-        let a_chen = CONSONANTS.iter().find(|c| c.0 == Con::AChen).unwrap();
+        let a_chen = Con::AChen.get().1;
         //println!("tokens=++++++ {:#?}", self.tokens);
 
         let mut prev_type = TokenType::Sym;
@@ -34,50 +36,48 @@ impl<'a> EwtsToUnicodeConverter<'a> {
 
         while self.is_in_bounds() {
             match self.tokens[self.ind] {
-                Token::Con(t) => 'con: {
-                    let tuple = CONSONANTS.iter().find(|c| c.0 == t).unwrap();
+                Token::Con(c) => 'con: {
+                    let tuple = c.get();
 
                     if prev_type == TokenType::Con {
-                        if t == Con::AChen {
+                        if c == Con::AChen {
                             prev_type = TokenType::Vowel;
                             break 'con;
                         } else {
-                            result += tuple.3;
+                            // TODO: check sup and sub here
+                            result += tuple.2;
                         }
                     } else if prev_type == TokenType::ConSpec && last_con_spec.unwrap() == ConSpec::Plus {
-                        result += tuple.3;
-                    } else {
                         result += tuple.2;
+                    } else {
+                        result += tuple.1;
                     }
 
                     prev_type = TokenType::Con;
                 }
                 Token::Vowel(v) => {
-                    let tuple = VOWELS.iter().find(|t| t.0 == v).unwrap();
                     if prev_type != TokenType::Con {
-                        result += a_chen.2;
+                        result += a_chen;
                     }
-                    result += tuple.2;
                     prev_type = TokenType::Vowel;
+                    result += v.get().1;
                 }
                 Token::Sym(t) => {
-                    let tuple = SYM.iter().find(|s| s.0 == t).unwrap();
                     prev_type = TokenType::Sym;
-                    result += tuple.2;
+                    result += t.get().1;
                 }
-                Token::Final(t) => {
-                    let tuple = FINALS.iter().find(|f| f.0 == t).unwrap();
+                Token::Final(f) => {
                     prev_type = TokenType::Final;
-                    result += tuple.2;
+                    result += f.get().1;
                 }
                 Token::ConSpec(s) => {
                     match s {
-                        ConSpec::Plus| ConSpec::Period => {
+                        ConSpec::Plus | ConSpec::Period => {
                             last_con_spec = Some(s);
-                        },
+                        }
                         _ => {
-                            let tuple = CON_SPEC.iter().find(|t| t.0 == s).unwrap();
-                            result += tuple.2;
+                            last_con_spec = Some(s);
+                            result += s.get().1;
                         }
                     }
                     prev_type = TokenType::ConSpec;
@@ -96,5 +96,13 @@ impl<'a> EwtsToUnicodeConverter<'a> {
 
     fn is_in_bounds(&self) -> bool {
         self.ind < self.tokens_len
+    }
+}
+
+pub(crate) struct EwtsToUnicodeConverterMaps {}
+
+impl EwtsToUnicodeConverterMaps {
+    pub(crate) fn create() -> Self {
+        EwtsToUnicodeConverterMaps {}
     }
 }

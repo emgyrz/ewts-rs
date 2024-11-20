@@ -2,23 +2,25 @@ mod converter;
 mod dict;
 mod tokenizer;
 
-use converter::EwtsToUnicodeConverter;
+use converter::{EwtsToUnicodeConverter, EwtsToUnicodeConverterMaps};
 use tokenizer::{EwtsToUnicodeTokenMap, EwtsToUnicodeTokenizer};
 
 pub struct EwtsConverter {
     ewts_to_unicode_tokens_map: EwtsToUnicodeTokenMap,
+    ewts_to_unicode_converter_maps: EwtsToUnicodeConverterMaps,
 }
 
 impl EwtsConverter {
     pub fn create() -> Self {
         EwtsConverter {
             ewts_to_unicode_tokens_map: EwtsToUnicodeTokenMap::create(),
+            ewts_to_unicode_converter_maps: EwtsToUnicodeConverterMaps::create(),
         }
     }
 
     pub fn ewts_to_unicode(&self, src: &str) -> String {
         let tokens = EwtsToUnicodeTokenizer::tokenize(&self.ewts_to_unicode_tokens_map, src);
-        EwtsToUnicodeConverter::convert(&tokens)
+        EwtsToUnicodeConverter::convert(&self.ewts_to_unicode_converter_maps, &tokens)
     }
 }
 
@@ -68,6 +70,7 @@ grwa drwa phywa
             "ཨོཾ་ཨཿཧཱུྂ་བཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྂ༔",
         ),
         ("g.yeng gyeng ", "གཡེང་གྱེང་"),
+        //("sha ai gaang angs ", "ཤ་ཨཻ་གཨང་ཨངས་"),
         //(
         //    "@#/_/sangs rgyas chos dang tshogs kyi mchog rnams la/_/byang chub bar du bdag ni skyabs su mchi/_/bdag gyis spyin sogs bgyis pa'i bsod nams kyis/_/'gro la phan phyir sangs rgyas 'grub par shog_!",
         //    "༄༅། །སངས་རྒྱས་ཆོས་དང་ཚོགས་ཀྱི་མཆོག་རྣམས་ལ། །བྱང་ཆུབ་བར་དུ་བདག་ནི་སྐྱབས་སུ་མཆི། །བདག་གྱིས་སྤྱིན་སོགས་བགྱིས་པའི་བསོད་ནམས་ཀྱིས། །འགྲོ་ལ་ཕན་ཕྱིར་སངས་རྒྱས་འགྲུབ་པར་ཤོག ༈"
