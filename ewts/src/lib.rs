@@ -34,6 +34,7 @@ mod tests {
     use super::*;
 
     static TST_DATA: &[(&str, &str)] = &[
+        ("rkw rk+w ", "རྐཝ་རྐྭ་"),
         (
             r#"
 rka rga rnga rja rnya rta rda rna rba rma rtsa rdza 
@@ -70,11 +71,17 @@ grwa drwa phywa
             "ཨོཾ་ཨཿཧཱུྂ་བཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྂ༔",
         ),
         ("g.yeng gyeng ", "གཡེང་གྱེང་"),
-        //("sha ai gaang angs ", "ཤ་ཨཻ་གཨང་ཨངས་"),
-        //(
-        //    "@#/_/sangs rgyas chos dang tshogs kyi mchog rnams la/_/byang chub bar du bdag ni skyabs su mchi/_/bdag gyis spyin sogs bgyis pa'i bsod nams kyis/_/'gro la phan phyir sangs rgyas 'grub par shog_!",
-        //    "༄༅། །སངས་རྒྱས་ཆོས་དང་ཚོགས་ཀྱི་མཆོག་རྣམས་ལ། །བྱང་ཆུབ་བར་དུ་བདག་ནི་སྐྱབས་སུ་མཆི། །བདག་གྱིས་སྤྱིན་སོགས་བགྱིས་པའི་བསོད་ནམས་ཀྱིས། །འགྲོ་ལ་ཕན་ཕྱིར་སངས་རྒྱས་འགྲུབ་པར་ཤོག ༈"
-        //),
+        //("va fi &ung","བ༹་ཕི༹་྅ུང" ),
+        ("sha ai gaang angs ", "ཤ་ཨཻ་གཨང་ཨངས་"),
+        ("sat+t+wa", "སཏྟྭ"),    // rule 4
+        ("bre+u rdo+e ", "བྲེུ་རྡོེ་"),    // rule 5
+        ("rta r+ta ", "རྟ་རྟ་"), // rule 6
+        ("R+na R+Ya R+ya ", "ཪྣ་ཪྻ་ཪྱ་"), // rule 13
+        ("sarba mang+galaM ", "སརྦ་མངྒལཾ་"), // rule 7
+        (
+            "@#/_/sangs rgyas chos dang tshogs kyi mchog rnams la/_/byang chub bar du bdag ni skyabs su mchi/_/bdag gyis spyin sogs bgyis pa'i bsod nams kyis/_/'gro la phan phyir sangs rgyas 'grub par shog_!",
+            "༄༅། །སངས་རྒྱས་ཆོས་དང་ཚོགས་ཀྱི་མཆོག་རྣམས་ལ། །བྱང་ཆུབ་བར་དུ་བདག་ནི་སྐྱབས་སུ་མཆི། །བདག་གྱིས་སྤྱིན་སོགས་བགྱིས་པའི་བསོད་ནམས་ཀྱིས། །འགྲོ་ལ་ཕན་ཕྱིར་སངས་རྒྱས་འགྲུབ་པར་ཤོག ༈"
+        ),
     ];
 
     #[test]

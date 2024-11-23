@@ -8,10 +8,21 @@ pub(crate) enum Token {
     Sym(Sym),
     Final(Final),
     ConSpec(ConSpec),
+    //NonTibetan(String),
     Unknown(u8),
 }
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+impl Token {
+    pub(crate) fn get_con(&self) -> Option<Con> {
+        match self {
+            Token::Con(c) => Some(*c),
+            _ => None,
+        }
+    }
+
+}
+
+#[derive(Debug, PartialEq, Eq)]
 pub(crate) enum TokenType {
     Con,
     Vowel,
@@ -20,7 +31,7 @@ pub(crate) enum TokenType {
     // TODO: unite to Other?
     Sym,
     Final,
-    Unknown,
+    //Unknown,
 }
 
 pub(crate) struct EwtsToUnicodeTokenizer<'a> {
@@ -208,6 +219,7 @@ mod tests {
 
         TST_DATA.iter().for_each(|td| {
             let tokens = EwtsToUnicodeTokenizer::tokenize(&map, td.0);
+            //println!("tst:!!!!!!!! src -- {:?} ", std::mem::size_of::<Token>());
             println!("tst: src -- {:?} | result -- {:?}", td.0, tokens);
             assert_eq!(tokens, td.1);
         });

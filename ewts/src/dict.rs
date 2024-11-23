@@ -2,121 +2,9 @@
 
 pub(crate) type EwtsAnUnicodeStr = (&'static str, &'static str);
 
-type Combinations<'a> = &'a [(
-    Con,              // sup or sub
-    &'a [Con],        // combination with one
-    &'a [(Con, Con)], // with two
-)];
+static EMPTY: &str = "";
 
-pub(crate) static SUPERSCRIPTS: Combinations<'static> = &[
-    // (["k","g","ng","j","ny","t","d","n","b","m","ts","dz" ||| "k+y","g+y","m+y","b+w","ts+w","g+w"])
-    (
-        Con::R,
-        &[
-            Con::K, Con::G, Con::Ng, Con::J, Con::Ny, Con::T, Con::D, Con::N, Con::B, Con::M, Con::Ts, Con::Dz,
-        ],
-        &[
-            (Con::K, Con::Y),
-            (Con::G, Con::Y),
-            (Con::M, Con::Y),
-            (Con::B, Con::W),
-            (Con::Ts, Con::W),
-            (Con::G, Con::W),
-        ],
-    ),
-    //
-    // (["k","g","ng","c","j","t","d","p","b","h"])
-    (
-        Con::L,
-        &[
-            Con::K, Con::G, Con::Ng, Con::C, Con::J, Con::T, Con::D, Con::P, Con::B, Con::H,
-        ],
-        &[],
-    ),
-    //
-    //  ([
-    //      "k","g","ng","ny","t","d","n","p","b","m","ts" 
-    //      ||| 
-    //      "k+y","g+y","p+y","b+y","m+y","k+r","g+r","p+r","b+r","m+r","n+r"
-    //  ])
-    (
-        Con::S,
-        &[
-            Con::K, Con::G, Con::Ng, Con::Ny, Con::T, Con::D, Con::N, Con::P, Con::B, Con::M, Con::Ts,
-        ],
-        &[
-            (Con::K, Con::Y),
-            (Con::G, Con::Y),
-            (Con::P, Con::Y),
-            (Con::B, Con::Y),
-            (Con::M, Con::Y),
-            (Con::K, Con::R),
-            (Con::G, Con::R),
-            (Con::P, Con::R),
-            (Con::B, Con::R),
-            (Con::M, Con::R),
-            (Con::N, Con::R),
-        ],
-    ),
-];
-
-pub(crate) static SUBSCRIPTS: Combinations<'static> = &[
-    // (["k","kh","g","p","ph","b","m" ||| "r+k","r+g","r+m","s+k","s+g","s+p","s+b","s+m"])
-    (
-        Con::Y,
-        &[
-            Con::K, Con::Kh, Con::G, Con::P, Con::Ph, Con::B, Con::M
-        ],
-        &[
-            (Con::R, Con::K),
-            (Con::R, Con::G),
-            (Con::R, Con::M),
-            (Con::S, Con::K),
-            (Con::S, Con::G),
-            (Con::S, Con::P),
-            (Con::S, Con::B),
-            (Con::S, Con::M),
-        ],
-    ),
-    // (["k","kh","g","t","th","d","n","p","ph","b","m","sh","s","h","dz" ||| "s+k","s+g","s+p","s+b","s+m","s+n"])
-    (
-        Con::R,
-        &[
-            Con::K, Con::Kh, Con::G, Con::T, Con::Th, Con::D, Con::N, Con::P, Con::Ph, Con::B, Con::M, Con::Sh, Con::S, Con::H, Con::Dz,
-        ],
-        &[
-            (Con::S, Con::K),
-            (Con::S, Con::G),
-            (Con::S, Con::P),
-            (Con::S, Con::B),
-            (Con::S, Con::M),
-            (Con::S, Con::N),
-        ]
-    ),
-    // (["k","g","b","r","s","z"])
-    (
-        Con::L, 
-        &[
-            Con::K, Con::G, Con::B, Con::R, Con::S, Con::Z
-        ],
-        &[]
-    ),
-    // (["k","kh","g","c","ny","t","d","ts","tsh","zh","z","r","l","sh","s","h" ||| "g+r","d+r","ph+y","r+g","r+ts"])
-    (
-        Con::W,
-        &[
-            Con::K, Con::Kh, Con::G, Con::C, Con::Ny, Con::T, Con::D, Con::Ts, Con::Tsh, Con::Zh, Con::Z, Con::R, Con::L, Con::Sh, Con::S, Con::H,
-        ],
-        &[
-            (Con::G, Con::R),
-            (Con::D, Con::R),
-            (Con::Ph, Con::Y),
-            (Con::R, Con::G),
-            (Con::R, Con::Ts),
-        ]
-    ),
-];
-
+//
 // TODO: del?
 //static VOW_R_MINUS_I: (&str, &str) = ("r-i", "\u{0fb2}\u{0f80}");
 //static VOW_R_MINUS_I_BIG: (&str, &str) = ("r-I", "\u{0fb2}\u{0f71}\u{0f80}");
@@ -125,15 +13,15 @@ pub(crate) static SUBSCRIPTS: Combinations<'static> = &[
 //
 
 //TODO: remove Debug,
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub(crate) enum Con {
-    K, Kh, G, Gh, GPlusH, Ng, C, Ch, J, Ny, TBig, MinusT, TBigH, MinusTh, DBig, MinusD, DBigH, DBigPlusH, MinusDh, MinusDPlusH, NBig, MinusN, T, Th, D, Dh, DPlusH, N, P, Ph, B, Bh, BPlusH, M, Ts, Tsh, Dz, Dzh, DzPlusH, W, Zh, Z, A, Y, R, L, Sh, SBigH, MinusSh, S, H, AChen, WBig, YBig, RBig,
+    K, Kh, G, Gh, GPlusH, Ng, C, Ch, J, Ny, TBig, MinusT, TBigH, MinusTh, DBig, MinusD, DBigH, DBigPlusH, MinusDh, MinusDPlusH, NBig, MinusN, T, Th, D, Dh, DPlusH, N, P, Ph, B, Bh, BPlusH, M, Ts, Tsh, Dz, Dzh, DzPlusH, W, Zh, Z, A, Y, R, L, Sh, SBigH, MinusSh, S, H, AChen, WBig, YBig, RBig, F, V, Paluta, 
 }
 
 impl Con {
     pub(crate) fn list() -> &'static [Con] {
         &[
-            Con::K, Con::Kh, Con::G, Con::Gh, Con::GPlusH, Con::Ng, Con::C, Con::Ch, Con::J, Con::Ny, Con::TBig, Con::MinusT, Con::TBigH, Con::MinusTh, Con::DBig, Con::MinusD, Con::DBigH, Con::DBigPlusH, Con::MinusDh, Con::MinusDPlusH, Con::NBig, Con::MinusN, Con::T, Con::Th, Con::D, Con::Dh, Con::DPlusH, Con::N, Con::P, Con::Ph, Con::B, Con::Bh, Con::BPlusH, Con::M, Con::Ts, Con::Tsh, Con::Dz, Con::Dzh, Con::DzPlusH, Con::W, Con::Zh, Con::Z, Con::A, Con::Y, Con::R, Con::L, Con::Sh, Con::SBigH, Con::MinusSh, Con::S, Con::H, Con::AChen, Con::WBig, Con::YBig, Con::RBig,
+            Con::K, Con::Kh, Con::G, Con::Gh, Con::GPlusH, Con::Ng, Con::C, Con::Ch, Con::J, Con::Ny, Con::TBig, Con::MinusT, Con::TBigH, Con::MinusTh, Con::DBig, Con::MinusD, Con::DBigH, Con::DBigPlusH, Con::MinusDh, Con::MinusDPlusH, Con::NBig, Con::MinusN, Con::T, Con::Th, Con::D, Con::Dh, Con::DPlusH, Con::N, Con::P, Con::Ph, Con::B, Con::Bh, Con::BPlusH, Con::M, Con::Ts, Con::Tsh, Con::Dz, Con::Dzh, Con::DzPlusH, Con::W, Con::Zh, Con::Z, Con::A, Con::Y, Con::R, Con::L, Con::Sh, Con::SBigH, Con::MinusSh, Con::S, Con::H, Con::AChen, Con::WBig, Con::YBig, Con::RBig, Con::F, Con::V, Con::Paluta, 
         ]
     }
 
@@ -194,7 +82,14 @@ impl Con {
             Con::WBig => ("W", "\u{0f5d}", "\u{0fba}"),
             Con::YBig => ("Y", "\u{0f61}", "\u{0fbb}"),
             Con::RBig => ("R", "\u{0f6a}", "\u{0fbc}"),
+            Con::F => ("f", "\u{0f55}\u{0f39}", EMPTY),
+            Con::V => ("v", "\u{0f56}\u{0f39}", EMPTY),
+            Con::Paluta => ("&", "\u{0f85}", EMPTY),
         }
+    }
+
+    pub(crate) fn is_a_chen(&self) -> bool {
+        matches!(self, Con::AChen)
     }
 }
 
@@ -300,23 +195,140 @@ impl Final {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum ConSpec {
-    F, V, Paluta, Plus, Period,
+    Plus, Period,
 }
 
 impl ConSpec {
     pub(crate) fn list() -> &'static [ConSpec] {
         &[
-            ConSpec::F, ConSpec::V, ConSpec::Paluta, ConSpec::Plus, ConSpec::Period,
+            ConSpec::Plus, ConSpec::Period,
         ]
     }
 
     pub(crate) fn get(&self) -> EwtsAnUnicodeStr {
         match &self {
-            ConSpec::F => ("f", "\u{0f55}\u{0f39}"),
-            ConSpec::V => ("v", "\u{0f56}\u{0f39}"),
-            ConSpec::Paluta => ("&", "\u{0f85}"),
-            ConSpec::Plus => ("+", ""),
-            ConSpec::Period => (".", ""),
+            ConSpec::Plus => ("+", EMPTY),
+            ConSpec::Period => (".", EMPTY),
         }
     }
+
+
 }
+
+
+type Combinations<'a> = &'a [(
+    Con,              // sup or sub
+    &'a [Con],        // combination with one
+    &'a [(Con, Con)], // with two
+)];
+
+
+pub(crate) static SUPERSCRIPTS: Combinations<'static> = &[
+    // (["k","g","ng","j","ny","t","d","n","b","m","ts","dz" ||| "k+y","g+y","m+y","b+w","ts+w","g+w"])
+    (
+        Con::R,
+        &[
+            Con::K, Con::G, Con::Ng, Con::J, Con::Ny, Con::T, Con::D, Con::N, Con::B, Con::M, Con::Ts, Con::Dz,
+        ],
+        &[
+            (Con::K, Con::Y),
+            (Con::G, Con::Y),
+            (Con::M, Con::Y),
+            (Con::B, Con::W),
+            (Con::Ts, Con::W),
+            (Con::G, Con::W),
+        ],
+    ),
+    //
+    // (["k","g","ng","c","j","t","d","p","b","h"])
+    (
+        Con::L,
+        &[
+            Con::K, Con::G, Con::Ng, Con::C, Con::J, Con::T, Con::D, Con::P, Con::B, Con::H,
+        ],
+        &[],
+    ),
+    //
+    //  ([
+    //      "k","g","ng","ny","t","d","n","p","b","m","ts" 
+    //      ||| 
+    //      "k+y","g+y","p+y","b+y","m+y","k+r","g+r","p+r","b+r","m+r","n+r"
+    //  ])
+    (
+        Con::S,
+        &[
+            Con::K, Con::G, Con::Ng, Con::Ny, Con::T, Con::D, Con::N, Con::P, Con::B, Con::M, Con::Ts,
+        ],
+        &[
+            (Con::K, Con::Y),
+            (Con::G, Con::Y),
+            (Con::P, Con::Y),
+            (Con::B, Con::Y),
+            (Con::M, Con::Y),
+            (Con::K, Con::R),
+            (Con::G, Con::R),
+            (Con::P, Con::R),
+            (Con::B, Con::R),
+            (Con::M, Con::R),
+            (Con::N, Con::R),
+        ],
+    ),
+];
+
+pub(crate) static SUBSCRIPTS: Combinations<'static> = &[
+    // (["k","kh","g","p","ph","b","m" ||| "r+k","r+g","r+m","s+k","s+g","s+p","s+b","s+m"])
+    (
+        Con::Y,
+        &[
+            Con::K, Con::Kh, Con::G, Con::P, Con::Ph, Con::B, Con::M
+        ],
+        &[
+            (Con::R, Con::K),
+            (Con::R, Con::G),
+            (Con::R, Con::M),
+            (Con::S, Con::K),
+            (Con::S, Con::G),
+            (Con::S, Con::P),
+            (Con::S, Con::B),
+            (Con::S, Con::M),
+        ],
+    ),
+    // (["k","kh","g","t","th","d","n","p","ph","b","m","sh","s","h","dz" ||| "s+k","s+g","s+n","s+p","s+b","s+m"])
+    (
+        Con::R,
+        &[
+            Con::K, Con::Kh, Con::G, Con::T, Con::Th, Con::D, Con::N, Con::P, Con::Ph, Con::B, Con::M, Con::Sh, Con::S, Con::H, Con::Dz,
+        ],
+        &[
+            (Con::S, Con::K),
+            (Con::S, Con::G),
+            (Con::S, Con::N),
+            (Con::S, Con::P),
+            (Con::S, Con::B),
+            (Con::S, Con::M),
+        ]
+    ),
+    // (["k","g","b","r","s","z"])
+    (
+        Con::L, 
+        &[
+            Con::K, Con::G, Con::B, Con::R, Con::S, Con::Z
+        ],
+        &[]
+    ),
+    // (["k","kh","g","c","ny","t","d","ts","tsh","zh","z","r","l","sh","s","h" ||| "g+r","d+r","ph+y","r+g","r+ts"])
+    (
+        Con::W,
+        &[
+            Con::K, Con::Kh, Con::G, Con::C, Con::Ny, Con::T, Con::D, Con::Ts, Con::Tsh, Con::Zh, Con::Z, Con::R, Con::L, Con::Sh, Con::S, Con::H,
+        ],
+        &[
+            (Con::G, Con::R),
+            (Con::D, Con::R),
+            (Con::Ph, Con::Y),
+            (Con::R, Con::G),
+            (Con::R, Con::Ts),
+        ]
+    ),
+];
+

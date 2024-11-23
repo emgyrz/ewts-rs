@@ -1,11 +1,15 @@
-use crate::dict::{Con, ConSpec};
+use crate::dict::{Con, ConSpec, SUBSCRIPTS, SUPERSCRIPTS};
 use crate::tokenizer::{Token, TokenType};
+use std::collections::HashMap;
 
 pub(crate) struct EwtsToUnicodeConverter<'a> {
     maps: &'a EwtsToUnicodeConverterMaps,
     ind: usize,
     tokens: &'a [Token],
     tokens_len: usize,
+    prev_type: TokenType,
+    prev_con_combined: bool,
+    last_con_spec_is_plus: bool,
 }
 
 impl<'a> EwtsToUnicodeConverter<'a> {
@@ -15,6 +19,9 @@ impl<'a> EwtsToUnicodeConverter<'a> {
             ind: 0,
             tokens,
             tokens_len: tokens.len(),
+            prev_type: TokenType::Sym,
+            prev_con_combined: false,
+            last_con_spec_is_plus: false,
         }
     }
 
@@ -28,63 +35,67 @@ impl<'a> EwtsToUnicodeConverter<'a> {
 
         //println!("tokens_len {} ", self.tokens_len);
 
-        let a_chen = Con::AChen.get().1;
+        let a_chen_tib_str = Con::AChen.get().1;
         //println!("tokens=++++++ {:#?}", self.tokens);
-
-        let mut prev_type = TokenType::Sym;
-        let mut last_con_spec = None;
 
         while self.is_in_bounds() {
             match self.tokens[self.ind] {
                 Token::Con(c) => 'con: {
                     let tuple = c.get();
 
-                    if prev_type == TokenType::Con {
-                        if c == Con::AChen {
-                            prev_type = TokenType::Vowel;
+                    let mut curr_prev_con_combined = false;
+
+                    if self.prev_type == TokenType::Con {
+                        if c.is_a_chen() {
+                            self.prev_type = TokenType::Vowel;
+                            self.prev_con_combined = false;
                             break 'con;
-                        } else {
-                            // TODO: check sup and sub here
-                            result += tuple.2;
                         }
-                    } else if prev_type == TokenType::ConSpec && last_con_spec.unwrap() == ConSpec::Plus {
+
+                        if self.is_lower_form(c) {
+                            result += tuple.2;
+                            curr_prev_con_combined = true;
+                        } else {
+                            result += tuple.1;
+                        }
+                    } else if self.prev_type == TokenType::ConSpec && self.last_con_spec_is_plus {
                         result += tuple.2;
+                        curr_prev_con_combined = true;
                     } else {
                         result += tuple.1;
                     }
 
-                    prev_type = TokenType::Con;
+                    self.prev_con_combined = curr_prev_con_combined;
+                    self.prev_type = TokenType::Con;
                 }
                 Token::Vowel(v) => {
-                    if prev_type != TokenType::Con {
-                        result += a_chen;
+                    if self.prev_type == TokenType::Con
+                        || (self.prev_type == TokenType::ConSpec && self.last_con_spec_is_plus)
+                    {
+                    } else {
+                        result += a_chen_tib_str;
                     }
-                    prev_type = TokenType::Vowel;
+                    self.prev_type = TokenType::Vowel;
                     result += v.get().1;
                 }
                 Token::Sym(t) => {
-                    prev_type = TokenType::Sym;
+                    self.prev_type = TokenType::Sym;
                     result += t.get().1;
                 }
-                Token::Final(f) => {
-                    prev_type = TokenType::Final;
-                    result += f.get().1;
-                }
                 Token::ConSpec(s) => {
-                    match s {
-                        ConSpec::Plus | ConSpec::Period => {
-                            last_con_spec = Some(s);
-                        }
-                        _ => {
-                            last_con_spec = Some(s);
-                            result += s.get().1;
-                        }
+                    //last_con_spec = Some(s);
+                    if s == ConSpec::Plus {
+                        self.last_con_spec_is_plus = true;
                     }
-                    prev_type = TokenType::ConSpec;
+                    self.prev_type = TokenType::ConSpec;
+                }
+                Token::Final(f) => {
+                    self.prev_type = TokenType::Final;
+                    result += f.get().1;
                 }
                 Token::Unknown(u) => {
                     result.push(u as char);
-                }
+                } //Token::NonTibetan(_) => todo!(),
             };
 
             self.ind += 1;
@@ -94,15 +105,95 @@ impl<'a> EwtsToUnicodeConverter<'a> {
         result
     }
 
+    fn is_lower_form(&self, con: Con) -> bool {
+        if let Some(curr_con_as_sub) = self.maps.sup_sub.get(&con) {
+            let prev_con = self.tokens[self.ind - 1].get_con().unwrap();
+
+            if let Some(middle) = curr_con_as_sub.prevs.get(&prev_con) {
+                if middle.is_finite && !self.prev_con_combined {
+                    true
+                } else {
+                    let prev2_con = if self.ind < 2 {
+                        None
+                    } else {
+                        self.tokens[self.ind - 2].get_con()
+                    };
+
+                    if let Some(prev2) = prev2_con {
+                        middle.prevs.contains_key(&prev2)
+                    } else {
+                        middle.is_finite
+                    }
+                }
+            } else {
+                false
+            }
+        } else {
+            false
+        }
+    }
+
     fn is_in_bounds(&self) -> bool {
         self.ind < self.tokens_len
     }
 }
 
-pub(crate) struct EwtsToUnicodeConverterMaps {}
+pub(crate) struct EwtsToUnicodeConverterMaps {
+    sup_sub: HashMap<Con, SubSupCon>,
+}
 
 impl EwtsToUnicodeConverterMaps {
     pub(crate) fn create() -> Self {
-        EwtsToUnicodeConverterMaps {}
+        let mut sup_sub_map = HashMap::new();
+
+        SUBSCRIPTS.iter().for_each(|s| {
+            let sub = sup_sub_map.entry(s.0).or_insert(SubSupCon::new());
+
+            s.1.iter().for_each(|middle_con| {
+                sub.prevs.entry(*middle_con).or_insert(SubSupCon::new_finite());
+            });
+
+            s.2.iter().for_each(|(top_con, middle_con)| {
+                let middle = sub.prevs.entry(*middle_con).or_insert(SubSupCon::new());
+                middle.prevs.entry(*top_con).or_insert(SubSupCon::new_finite());
+            });
+        });
+
+        SUPERSCRIPTS.iter().for_each(|s| {
+            let sup = s.0;
+
+            s.1.iter().for_each(|middle_con| {
+                let lower = sup_sub_map.entry(*middle_con).or_insert(SubSupCon::new());
+                lower.prevs.entry(sup).or_insert(SubSupCon::new_finite());
+            });
+
+            s.2.iter().for_each(|(middle_con, lower_con)| {
+                let lower = sup_sub_map.entry(*lower_con).or_insert(SubSupCon::new());
+                let middle = lower.prevs.entry(*middle_con).or_insert(SubSupCon::new());
+                middle.prevs.entry(sup).or_insert(SubSupCon::new_finite());
+            });
+        });
+
+        EwtsToUnicodeConverterMaps { sup_sub: sup_sub_map }
+    }
+}
+
+struct SubSupCon {
+    is_finite: bool,
+    prevs: HashMap<Con, SubSupCon>,
+}
+
+impl SubSupCon {
+    fn new() -> Self {
+        SubSupCon {
+            is_finite: false,
+            prevs: HashMap::new(),
+        }
+    }
+
+    fn new_finite() -> Self {
+        let mut s = Self::new();
+        s.is_finite = true;
+        s
     }
 }
