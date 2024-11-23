@@ -12,8 +12,40 @@ Core conversion library written in Rust.
 
 [\[Docs\]](https://docs.rs/ewts/latest/ewts/)
 
+Example:
+```rust
+use ewts::{EwtsConverter};
+
+let converter = EwtsConverter::create();
+let ewts_str = "oM aHhU~M` badz+ra gu ru pad+ma sid+d+hi hU~M`:";
+
+let tib_unicode_str = converter.ewts_to_unicode(ewts_str);
+
+assert_eq!(tib_unicode_str, "ཨོཾ་ཨཿཧཱུྂ་བཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྂ༔");
+```
+
 #### ewts-cli [![Crates.io Version](https://img.shields.io/crates/v/ewts-cli)](https://crates.io/crates/ewts-cli)
 Command line interface for conversion. For use in your favorite console 
+
+Example:
+```sh
+$ ewts-cli --input "bkra shis bde legs/"
+# བཀྲ་ཤིས་བདེ་ལེགས།
+
+$ ewts-cli --help
+# ...
+# Usage: ewts-cli [OPTIONS] --input <INPUT>
+# 
+# Options:
+#   -s, --source-type <SOURCE_TYPE>  Type of input symbols [default: ewts] [possible values: ewts, unicode]
+#   -i, --input <INPUT>              String to convert
+#   -h, --help                       Print help
+#   -V, --version                    Print version
+
+# to convert file on Unix-systems run:
+$ ewts-cli -i "$(cat /path/to/your/file.txt)"
+```
+
 
 
 #### ewts-wasm

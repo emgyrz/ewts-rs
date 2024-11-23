@@ -1,3 +1,19 @@
+//! 
+//! Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols
+//!
+//! # Examples
+//! ```
+//! use ewts::{EwtsConverter};
+//! 
+//! let converter = EwtsConverter::create();
+//! let ewts_str = "oM aHhU~M` badz+ra gu ru pad+ma sid+d+hi hU~M`:";
+//!
+//! let tib_unicode_str = converter.ewts_to_unicode(ewts_str);
+//!
+//! assert_eq!(tib_unicode_str, "ཨོཾ་ཨཿཧཱུྂ་བཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྂ༔");
+//! ```
+//!
+
 mod converter;
 mod dict;
 mod tokenizer;
@@ -5,12 +21,15 @@ mod tokenizer;
 use converter::{EwtsToUnicodeConverter, EwtsToUnicodeConverterMaps};
 use tokenizer::{EwtsToUnicodeTokenMap, EwtsToUnicodeTokenizer};
 
+/// Main and only one exported value. Stores inner symbol's maps and functions
 pub struct EwtsConverter {
     ewts_to_unicode_tokens_map: EwtsToUnicodeTokenMap,
     ewts_to_unicode_converter_maps: EwtsToUnicodeConverterMaps,
 }
 
 impl EwtsConverter {
+
+    /// Creates one
     pub fn create() -> Self {
         EwtsConverter {
             ewts_to_unicode_tokens_map: EwtsToUnicodeTokenMap::create(),
@@ -18,6 +37,8 @@ impl EwtsConverter {
         }
     }
 
+    /// Converts ewts symbols to Tibetan unicode.
+    /// e.g. "ka " -> "ཀ་"; "sgrol " -> "སྒྲོལ་"
     pub fn ewts_to_unicode(&self, src: &str) -> String {
         let tokens = EwtsToUnicodeTokenizer::tokenize(&self.ewts_to_unicode_tokens_map, src);
         EwtsToUnicodeConverter::convert(&self.ewts_to_unicode_converter_maps, &tokens)
