@@ -53,16 +53,16 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                         }
 
                         if self.is_lower_form(c) {
-                            result += tuple.2;
+                            result.push_str(tuple.2);
                             curr_prev_con_combined = true;
                         } else {
-                            result += tuple.1;
+                            result.push_str(tuple.1);
                         }
                     } else if self.prev_type == TokenType::ConSpec && self.last_con_spec_is_plus {
-                        result += tuple.2;
+                        result.push_str(tuple.2);
                         curr_prev_con_combined = true;
                     } else {
-                        result += tuple.1;
+                        result.push_str(tuple.1);
                     }
 
                     self.prev_con_combined = curr_prev_con_combined;
@@ -73,14 +73,14 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                         || (self.prev_type == TokenType::ConSpec && self.last_con_spec_is_plus)
                     {
                     } else {
-                        result += a_chen_tib_str;
+                        result.push_str(a_chen_tib_str);
                     }
                     self.prev_type = TokenType::Vowel;
-                    result += v.get().1;
+                    result.push_str(v.get().1);
                 }
                 Token::Sym(t) => {
                     self.prev_type = TokenType::Sym;
-                    result += t.get().1;
+                    result.push_str(t.get().1);
                 }
                 Token::ConSpec(s) => {
                     //last_con_spec = Some(s);
@@ -91,7 +91,7 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                 }
                 Token::Final(f) => {
                     self.prev_type = TokenType::Final;
-                    result += f.get().1;
+                    result.push_str(f.get().1);
                 }
                 Token::Unknown(u) => {
                     result.push(u as char);
@@ -107,6 +107,7 @@ impl<'a> EwtsToUnicodeConverter<'a> {
 
     fn is_lower_form(&self, con: Con) -> bool {
         if let Some(curr_con_as_sub) = self.maps.sup_sub.get(&con) {
+            // unwrap bc - if self.prev_type == TokenType::Con
             let prev_con = self.tokens[self.ind - 1].get_con().unwrap();
 
             if let Some(middle) = curr_con_as_sub.prevs.get(&prev_con) {

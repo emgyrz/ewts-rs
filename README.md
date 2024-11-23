@@ -29,12 +29,12 @@ Command line interface for conversion. For use in your favorite console
 
 Example:
 ```sh
-$ ewts-cli --input "bkra shis bde legs/"
+$ ewts --input "bkra shis bde legs/"
 # བཀྲ་ཤིས་བདེ་ལེགས།
 
-$ ewts-cli --help
+$ ewts --help
 # ...
-# Usage: ewts-cli [OPTIONS] --input <INPUT>
+# Usage: ewts [OPTIONS] --input <INPUT>
 # 
 # Options:
 #   -s, --source-type <SOURCE_TYPE>  Type of input symbols [default: ewts] [possible values: ewts, unicode]
@@ -43,7 +43,7 @@ $ ewts-cli --help
 #   -V, --version                    Print version
 
 # to convert file on Unix-systems run:
-$ ewts-cli -i "$(cat /path/to/your/file.txt)"
+$ ewts -i "$(cat /path/to/your/file.txt)"
 ```
 
 

@@ -19,7 +19,6 @@ impl Token {
             _ => None,
         }
     }
-
 }
 
 #[derive(Debug, PartialEq, Eq)]
