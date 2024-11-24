@@ -54,7 +54,7 @@ mod tests {
     use super::*;
 
     static TST_DATA: &[(&str, &str)] = &[
-        ("rkw rk+w ", "རྐཝ་རྐྭ་"),
+        ("rkw rk+w ", "རཀྭ་རྐྭ་"),
         (
             r#"
 rka rga rnga rja rnya rta rda rna rba rma rtsa rdza 
@@ -90,7 +90,7 @@ grwa drwa phywa
             "oM aHhU~M` badz+ra gu ru pad+ma sid+d+hi hU~M`:",
             "ཨོཾ་ཨཿཧཱུྂ་བཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྂ༔",
         ),
-        ("g.yeng gyeng ", "གཡེང་གྱེང་"),
+
         //("va fi &ung","བ༹་ཕི༹་྅ུང" ),
         ("sha ai gaang angs ", "ཤ་ཨཻ་གཨང་ཨངས་"),
         ("sat+t+wa", "སཏྟྭ"),    // rule 4
@@ -109,6 +109,24 @@ grwa drwa phywa
         let converter = EwtsConverter::create();
 
         TST_DATA.iter().for_each(|td| {
+            assert_eq!(converter.ewts_to_unicode(td.0), td.1);
+        });
+    }
+
+    #[test]
+    fn etu_prefixes() {
+        let data = [
+            ("brgyad brjod ", "བརྒྱད་བརྗོད་"),
+            ("g.yon l+ha g.yon ", "གཡོན་ལྷ་གཡོན་"),
+            ("g.yeng gyeng g.yul ", "གཡེང་གྱེང་གཡུལ་"),
+            (
+                "bdag gis ang ga'i rgyal po dang lhan cig g.yul ngor g.yul sprad par bgyi'o/",
+                "བདག་གིས་ཨང་གའི་རྒྱལ་པོ་དང་ལྷན་ཅིག་གཡུལ་ངོར་གཡུལ་སྤྲད་པར་བགྱིའོ།",
+            ),
+        ];
+
+        data.iter().for_each(|td| {
+            let converter = EwtsConverter::create();
             assert_eq!(converter.ewts_to_unicode(td.0), td.1);
         });
     }

@@ -63,16 +63,16 @@ impl<'a> EwtsToUnicodeTokenizer<'a> {
     }
 
     fn run(mut self) -> TokenizeResult {
-        let mut result = Vec::with_capacity(self.src_len);
+        let mut tokens = Vec::with_capacity(self.src_len);
 
         while self.is_in_bounds() {
             let (tkn, len) = self.find_next();
-            result.push(tkn);
+            tokens.push(tkn);
             self.ind += len;
         }
 
         TokenizeResult {
-            tokens: result,
+            tokens,
             non_tibetan: self.non_tibetan,
         }
     }

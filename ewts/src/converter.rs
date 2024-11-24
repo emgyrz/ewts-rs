@@ -34,8 +34,8 @@ impl<'a> EwtsToUnicodeConverter<'a> {
 
         let a_chen_tib_str = Con::AChen.get().1;
 
-        while self.is_in_bounds() {
-            match self.tokenize_result.tokens[self.ind] {
+        self.tokenize_result.tokens.iter().for_each(|tkn| {
+            match tkn {
                 Token::Con(c) => 'con: {
                     let tuple = c.get();
 
@@ -48,7 +48,7 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                             break 'con;
                         }
 
-                        if self.is_lower_form(c) {
+                        if self.is_lower_form(*c) {
                             result.push_str(tuple.2);
                             curr_prev_con_combined = true;
                         } else {
@@ -79,10 +79,7 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                     result.push_str(t.get().1);
                 }
                 Token::ConSpec(s) => {
-                    //last_con_spec = Some(s);
-                    if s == ConSpec::Plus {
-                        self.last_con_spec_is_plus = true;
-                    }
+                    self.last_con_spec_is_plus = *s == ConSpec::Plus;
                     self.prev_type = TokenType::ConSpec;
                 }
                 Token::Final(f) => {
@@ -90,41 +87,53 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                     result.push_str(f.get().1);
                 }
                 Token::Unknown(u) => {
-                    result.push(u as char);
+                    result.push(*u as char);
                 }
                 Token::NonTibetan(ind) => {
-                    if let Some(range) = self.tokenize_result.non_tibetan.get(ind as usize) {
+                    if let Some(range) = self.tokenize_result.non_tibetan.get(*ind as usize) {
                         result.push_str(&self.src[range.clone()]);
                     }
                 }
             };
-
             self.ind += 1;
-        }
+        });
 
         //println!("tokens_len {} -- results_len {} ", self.tokens_len, result.len());
         result
     }
 
+    // TODO: rewrite this
     fn is_lower_form(&self, con: Con) -> bool {
         if let Some(curr_con_as_sub) = self.maps.sup_sub.get(&con) {
             // unwrap bc it runs only if self.prev_type == TokenType::Con
             let prev_con = self.tokenize_result.tokens[self.ind - 1].get_con().unwrap();
 
-            if let Some(middle) = curr_con_as_sub.prevs.get(&prev_con) {
-                if middle.is_finite && !self.prev_con_combined {
-                    true
+            if let Some(prev_con_as_sup) = curr_con_as_sub.prevs.get(&prev_con) {
+                if prev_con_as_sup.is_finite && !self.prev_con_combined {
+                    if let Some(next_con) = self.get_con_at(self.ind + 1) {
+                        if next_con.is_a_chen() {
+                            return true;
+                        }
+                        let cur_as_next_sup_opt = self
+                            .maps
+                            .sup_sub
+                            .get(&next_con)
+                            .and_then(|next_con_as_sub| next_con_as_sub.prevs.get(&con));
+                        if let Some(cur_as_next_sup) = cur_as_next_sup_opt {
+                            cur_as_next_sup.prevs.contains_key(&prev_con)
+                        } else {
+                            cur_as_next_sup_opt.is_none()
+                        }
+                    } else {
+                        true
+                    }
                 } else {
-                    let prev2_con = if self.ind < 2 {
-                        None
-                    } else {
-                        self.tokenize_result.tokens[self.ind - 2].get_con()
-                    };
+                    let prev2_con_opt = self.get_con_at(self.ind - 2);
 
-                    if let Some(prev2) = prev2_con {
-                        middle.prevs.contains_key(&prev2)
+                    if let Some(prev2_con) = prev2_con_opt {
+                        prev_con_as_sup.prevs.contains_key(&prev2_con)
                     } else {
-                        middle.is_finite
+                        prev_con_as_sup.is_finite
                     }
                 }
             } else {
@@ -135,8 +144,8 @@ impl<'a> EwtsToUnicodeConverter<'a> {
         }
     }
 
-    fn is_in_bounds(&self) -> bool {
-        self.ind < self.tokens_len
+    fn get_con_at(&self, ind: usize) -> Option<Con> {
+        self.tokenize_result.tokens.get(ind).map(|tkn| tkn.get_con())?
     }
 }
 
