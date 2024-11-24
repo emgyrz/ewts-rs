@@ -1,5 +1,11 @@
 use crate::dict::{Con, ConSpec, Final, Sym, Vowel};
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Range};
+
+static SYM_SLASH: u8 = b'\\';
+static SYM_BRACKET_L: u8 = b'[';
+static SYM_BRACKET_R: u8 = b']';
+static SYM_U: u8 = b'u';
+static SYM_U_BIG: u8 = b'U';
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub(crate) enum Token {
@@ -8,7 +14,7 @@ pub(crate) enum Token {
     Sym(Sym),
     Final(Final),
     ConSpec(ConSpec),
-    //NonTibetan(String),
+    NonTibetan(u8),
     Unknown(u8),
 }
 
@@ -38,10 +44,11 @@ pub(crate) struct EwtsToUnicodeTokenizer<'a> {
     ind: usize,
     src_len: usize,
     src_bytes: &'a [u8],
+    non_tibetan: Vec<Range<usize>>,
 }
 
 impl<'a> EwtsToUnicodeTokenizer<'a> {
-    pub(crate) fn tokenize(map: &EwtsToUnicodeTokenMap, src: &str) -> Vec<Token> {
+    pub(crate) fn tokenize(map: &EwtsToUnicodeTokenMap, src: &str) -> TokenizeResult {
         let src_bytes = src.as_bytes();
 
         let tokenizer = EwtsToUnicodeTokenizer {
@@ -49,12 +56,13 @@ impl<'a> EwtsToUnicodeTokenizer<'a> {
             ind: 0,
             src_len: src_bytes.len(),
             src_bytes,
+            non_tibetan: Vec::with_capacity(3),
         };
 
-        tokenizer.into_tokens()
+        tokenizer.run()
     }
 
-    fn into_tokens(mut self) -> Vec<Token> {
+    fn run(mut self) -> TokenizeResult {
         let mut result = Vec::with_capacity(self.src_len);
 
         while self.is_in_bounds() {
@@ -63,16 +71,19 @@ impl<'a> EwtsToUnicodeTokenizer<'a> {
             self.ind += len;
         }
 
-        result
+        TokenizeResult {
+            tokens: result,
+            non_tibetan: self.non_tibetan,
+        }
     }
 
     fn is_in_bounds(&self) -> bool {
         self.ind < self.src_len
     }
 
-    fn find_next(&self) -> (Token, usize) {
-        let curr_char = &self.src_bytes[self.ind];
-        if let Some(first_ewts_char) = self.map.root.nodes.get(curr_char) {
+    fn find_next(&mut self) -> (Token, usize) {
+        let curr_char = self.src_bytes[self.ind];
+        if let Some(first_ewts_char) = self.map.root.nodes.get(&curr_char) {
             let mut i = 1;
 
             let mut last_valid: Option<(Token, usize)> = None;
@@ -91,11 +102,35 @@ impl<'a> EwtsToUnicodeTokenizer<'a> {
                 i += 1;
             }
 
-            last_valid.unwrap_or((Token::Unknown(*curr_char), 1))
+            last_valid.unwrap_or((Token::Unknown(curr_char), 1))
+        } else if curr_char == SYM_SLASH {
+            (Token::Unknown(curr_char), 1)
+        } else if curr_char == SYM_BRACKET_L {
+            self.get_non_tibetan_str()
         } else {
-            (Token::Unknown(*curr_char), 1)
+            (Token::Unknown(curr_char), 1)
         }
     }
+
+    fn get_non_tibetan_str(&mut self) -> (Token, usize) {
+        let mut len = 1;
+
+        while self.ind + len < self.src_len && self.src_bytes[self.ind + len] != SYM_BRACKET_R {
+            len += 1;
+        }
+
+        self.non_tibetan.push(Range {
+            start: self.ind + 1,
+            end: self.ind + len,
+        });
+
+        (Token::NonTibetan(self.non_tibetan.len() as u8 - 1), len + 1)
+    }
+}
+
+pub(crate) struct TokenizeResult {
+    pub(crate) tokens: Vec<Token>,
+    pub(crate) non_tibetan: Vec<Range<usize>>,
 }
 
 pub(crate) struct EwtsToUnicodeTokenMap {
@@ -217,10 +252,35 @@ mod tests {
         let map = EwtsToUnicodeTokenMap::create();
 
         TST_DATA.iter().for_each(|td| {
-            let tokens = EwtsToUnicodeTokenizer::tokenize(&map, td.0);
+            let result = EwtsToUnicodeTokenizer::tokenize(&map, td.0);
             //println!("tst:!!!!!!!! src -- {:?} ", std::mem::size_of::<Token>());
-            println!("tst: src -- {:?} | result -- {:?}", td.0, tokens);
-            assert_eq!(tokens, td.1);
+            println!("tst: src -- {:?} | result -- {:?}", td.0, result.tokens);
+            assert_eq!(result.tokens, td.1);
+        });
+    }
+
+    #[test]
+    fn ewts_to_unicode_tokenizer_non_tibetan_test() {
+        let data = [
+            (
+                "k [alphabet]h ",
+                &[
+                    Token::Con(Con::K),
+                    Token::Sym(Sym::Space),
+                    Token::NonTibetan(0),
+                    Token::Con(Con::H),
+                    Token::Sym(Sym::Space),
+                ] as &[Token],
+            ),
+            ("k[not_finished", &[Token::Con(Con::K), Token::NonTibetan(0)]),
+        ];
+
+        let map = EwtsToUnicodeTokenMap::create();
+
+        data.iter().for_each(|td| {
+            let result = EwtsToUnicodeTokenizer::tokenize(&map, td.0);
+            println!("tst: src -- {:?} | result -- {:?}", td.0, result.tokens);
+            assert_eq!(result.tokens, td.1);
         });
     }
 }

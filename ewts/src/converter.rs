@@ -1,11 +1,12 @@
 use crate::dict::{Con, ConSpec, SUBSCRIPTS, SUPERSCRIPTS};
-use crate::tokenizer::{Token, TokenType};
+use crate::tokenizer::{Token, TokenType, TokenizeResult};
 use std::collections::HashMap;
 
 pub(crate) struct EwtsToUnicodeConverter<'a> {
+    src: &'a str,
     maps: &'a EwtsToUnicodeConverterMaps,
     ind: usize,
-    tokens: &'a [Token],
+    tokenize_result: &'a TokenizeResult,
     tokens_len: usize,
     prev_type: TokenType,
     prev_con_combined: bool,
@@ -13,33 +14,28 @@ pub(crate) struct EwtsToUnicodeConverter<'a> {
 }
 
 impl<'a> EwtsToUnicodeConverter<'a> {
-    fn new(maps: &'a EwtsToUnicodeConverterMaps, tokens: &'a [Token]) -> Self {
-        EwtsToUnicodeConverter {
+    pub(crate) fn convert(maps: &EwtsToUnicodeConverterMaps, tokenize_result: &'a TokenizeResult, src: &str) -> String {
+        let converter = EwtsToUnicodeConverter {
+            src,
             maps,
             ind: 0,
-            tokens,
-            tokens_len: tokens.len(),
+            tokenize_result,
+            tokens_len: tokenize_result.tokens.len(),
             prev_type: TokenType::Sym,
             prev_con_combined: false,
             last_con_spec_is_plus: false,
-        }
-    }
+        };
 
-    pub(crate) fn convert(maps: &EwtsToUnicodeConverterMaps, tokens: &'a [Token]) -> String {
-        let converter = EwtsToUnicodeConverter::new(maps, tokens);
         converter.run()
     }
 
     fn run(mut self) -> String {
         let mut result = String::with_capacity(self.tokens_len * 3);
 
-        //println!("tokens_len {} ", self.tokens_len);
-
         let a_chen_tib_str = Con::AChen.get().1;
-        //println!("tokens=++++++ {:#?}", self.tokens);
 
         while self.is_in_bounds() {
-            match self.tokens[self.ind] {
+            match self.tokenize_result.tokens[self.ind] {
                 Token::Con(c) => 'con: {
                     let tuple = c.get();
 
@@ -95,20 +91,25 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                 }
                 Token::Unknown(u) => {
                     result.push(u as char);
-                } //Token::NonTibetan(_) => todo!(),
+                }
+                Token::NonTibetan(ind) => {
+                    if let Some(range) = self.tokenize_result.non_tibetan.get(ind as usize) {
+                        result.push_str(&self.src[range.clone()]);
+                    }
+                }
             };
 
             self.ind += 1;
         }
 
-        //println!("results_len {} ", result.len());
+        //println!("tokens_len {} -- results_len {} ", self.tokens_len, result.len());
         result
     }
 
     fn is_lower_form(&self, con: Con) -> bool {
         if let Some(curr_con_as_sub) = self.maps.sup_sub.get(&con) {
-            // unwrap bc - if self.prev_type == TokenType::Con
-            let prev_con = self.tokens[self.ind - 1].get_con().unwrap();
+            // unwrap bc it runs only if self.prev_type == TokenType::Con
+            let prev_con = self.tokenize_result.tokens[self.ind - 1].get_con().unwrap();
 
             if let Some(middle) = curr_con_as_sub.prevs.get(&prev_con) {
                 if middle.is_finite && !self.prev_con_combined {
@@ -117,7 +118,7 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                     let prev2_con = if self.ind < 2 {
                         None
                     } else {
-                        self.tokens[self.ind - 2].get_con()
+                        self.tokenize_result.tokens[self.ind - 2].get_con()
                     };
 
                     if let Some(prev2) = prev2_con {

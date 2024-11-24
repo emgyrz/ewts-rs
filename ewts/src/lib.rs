@@ -1,10 +1,10 @@
-//! 
+//!
 //! Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols
 //!
 //! # Examples
 //! ```
 //! use ewts::{EwtsConverter};
-//! 
+//!
 //! let converter = EwtsConverter::create();
 //! let ewts_str = "oM aHhU~M` badz+ra gu ru pad+ma sid+d+hi hU~M`:";
 //!
@@ -28,7 +28,6 @@ pub struct EwtsConverter {
 }
 
 impl EwtsConverter {
-
     /// Creates one
     pub fn create() -> Self {
         EwtsConverter {
@@ -41,7 +40,7 @@ impl EwtsConverter {
     /// e.g. "ka " -> "ཀ་"; "sgrol " -> "སྒྲོལ་"
     pub fn ewts_to_unicode(&self, src: &str) -> String {
         let tokens = EwtsToUnicodeTokenizer::tokenize(&self.ewts_to_unicode_tokens_map, src);
-        EwtsToUnicodeConverter::convert(&self.ewts_to_unicode_converter_maps, &tokens)
+        EwtsToUnicodeConverter::convert(&self.ewts_to_unicode_converter_maps, &tokens, src)
     }
 }
 
@@ -110,6 +109,20 @@ grwa drwa phywa
         let converter = EwtsConverter::create();
 
         TST_DATA.iter().for_each(|td| {
+            assert_eq!(converter.ewts_to_unicode(td.0), td.1);
+        });
+    }
+
+    #[test]
+    fn ewts_to_unicode_non_tibetan_test() {
+        let data = [
+            ("k [alphabet]_h ", "ཀ་alphabet ཧ་"),
+            ("[u]", "u"),
+            ("_[u]rjes[U]_[\\]_", " uརྗེསU \\ "),
+        ];
+
+        data.iter().for_each(|td| {
+            let converter = EwtsConverter::create();
             assert_eq!(converter.ewts_to_unicode(td.0), td.1);
         });
     }
