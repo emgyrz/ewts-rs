@@ -103,8 +103,8 @@ impl<'a> EwtsToUnicodeConverter<'a> {
     }
 
     // TODO: rewrite this
-    fn is_lower_form(&self, con: Con) -> bool {
-        if let Some(curr_con_as_sub) = self.maps.sup_sub.get(&con) {
+    fn is_lower_form(&self, cur_con: Con) -> bool {
+        if let Some(curr_con_as_sub) = self.maps.sup_sub.get(&cur_con) {
             // unwrap bc it runs only if self.prev_type == TokenType::Con
             let prev_con = self.tokenize_result.tokens[self.ind - 1].get_con().unwrap();
 
@@ -114,27 +114,21 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                         if next_con.is_a_chen() {
                             return true;
                         }
-                        let cur_as_next_sup_opt = self
-                            .maps
+
+                        self.maps
                             .sup_sub
                             .get(&next_con)
-                            .and_then(|next_con_as_sub| next_con_as_sub.prevs.get(&con));
-                        if let Some(cur_as_next_sup) = cur_as_next_sup_opt {
-                            cur_as_next_sup.prevs.contains_key(&prev_con)
-                        } else {
-                            cur_as_next_sup_opt.is_none()
-                        }
+                            .map(|bottom| bottom.can_be_under_two(&cur_con, &prev_con))
+                            // TODO: add tests for both true or false
+                            .unwrap_or(true)
                     } else {
                         true
                     }
                 } else {
-                    let prev2_con_opt = self.get_con_at(self.ind - 2);
-
-                    if let Some(prev2_con) = prev2_con_opt {
-                        prev_con_as_sup.prevs.contains_key(&prev2_con)
-                    } else {
-                        prev_con_as_sup.is_finite
-                    }
+                    self.get_con_at(self.ind - 2)
+                        .map(|prev2_con| prev_con_as_sup.can_be_under(&prev2_con))
+                        // TODO: tests
+                        .unwrap_or(prev_con_as_sup.is_finite)
                 }
             } else {
                 false
@@ -206,5 +200,16 @@ impl SubSupCon {
         let mut s = Self::new();
         s.is_finite = true;
         s
+    }
+
+    fn can_be_under(&self, con: &Con) -> bool {
+        self.prevs.get(con).map_or(false, |con_as_sub| con_as_sub.is_finite)
+    }
+
+    fn can_be_under_two(&self, con_middle: &Con, con_top: &Con) -> bool {
+        self.prevs
+            .get(con_middle)
+            .map(|middle| middle.can_be_under(con_top))
+            .unwrap_or(false)
     }
 }
