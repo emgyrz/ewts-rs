@@ -33,7 +33,7 @@ $ ewts -i "$(cat /path/to/your/file.txt)"
 
 
 #### Usage
-[![ewts-cli usage](../assets/ewts-cli-video-preview.png)](../assets/ewts-cli.mp4)
+https://github.com/user-attachments/assets/28f62452-abf4-437f-b973-666a6a36403e
 
 
 #### Installation
