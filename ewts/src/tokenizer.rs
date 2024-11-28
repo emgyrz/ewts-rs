@@ -1,5 +1,5 @@
 use crate::dict::{Con, ConSpec, Final, Sym, Vowel};
-use std::{collections::HashMap, ops::Range};
+use std::{char, collections::HashMap, ops::Range};
 
 static SYM_SLASH: u8 = b'\\';
 static SYM_BRACKET_L: u8 = b'[';
@@ -14,7 +14,8 @@ pub(crate) enum Token {
     Sym(Sym),
     Final(Final),
     ConSpec(ConSpec),
-    NonTibetan(u8),
+    NonTibetanStrRange(u8),
+    NonTibetanCharIndex(u8),
     Unknown(u8),
 }
 
@@ -44,37 +45,33 @@ pub(crate) struct EwtsToUnicodeTokenizer<'a> {
     ind: usize,
     src_len: usize,
     src_bytes: &'a [u8],
-    non_tibetan: Vec<Range<usize>>,
+    result: TokenizeResult,
 }
 
 impl<'a> EwtsToUnicodeTokenizer<'a> {
     pub(crate) fn tokenize(map: &EwtsToUnicodeTokenMap, src: &str) -> TokenizeResult {
         let src_bytes = src.as_bytes();
+        let src_len = src_bytes.len();
 
         let tokenizer = EwtsToUnicodeTokenizer {
             map,
             ind: 0,
-            src_len: src_bytes.len(),
+            src_len,
             src_bytes,
-            non_tibetan: Vec::with_capacity(3),
+            result: TokenizeResult::new(src_len),
         };
 
         tokenizer.run()
     }
 
     fn run(mut self) -> TokenizeResult {
-        let mut tokens = Vec::with_capacity(self.src_len);
-
         while self.is_in_bounds() {
             let (tkn, len) = self.find_next();
-            tokens.push(tkn);
+            self.result.tokens.push(tkn);
             self.ind += len;
         }
 
-        TokenizeResult {
-            tokens,
-            non_tibetan: self.non_tibetan,
-        }
+        self.result
     }
 
     fn is_in_bounds(&self) -> bool {
@@ -104,7 +101,7 @@ impl<'a> EwtsToUnicodeTokenizer<'a> {
 
             last_valid.unwrap_or((Token::Unknown(curr_char), 1))
         } else if curr_char == SYM_SLASH {
-            (Token::Unknown(curr_char), 1)
+            self.get_non_tibetan_char()
         } else if curr_char == SYM_BRACKET_L {
             self.get_non_tibetan_str()
         } else {
@@ -119,18 +116,75 @@ impl<'a> EwtsToUnicodeTokenizer<'a> {
             len += 1;
         }
 
-        self.non_tibetan.push(Range {
+        self.result.non_tibetan_str_ranges.push(Range {
             start: self.ind + 1,
             end: self.ind + len,
         });
 
-        (Token::NonTibetan(self.non_tibetan.len() as u8 - 1), len + 1)
+        (Token::NonTibetanStrRange(self.result.str_ranges_last_ind()), len + 1)
+    }
+
+    fn get_non_tibetan_char(&mut self) -> (Token, usize) {
+        if self.ind + 1 >= self.src_len {
+            return (Token::Unknown(self.src_bytes[self.ind]), 1);
+        }
+
+        let char_after_slash = self.src_bytes[self.ind + 1];
+
+        let is_u = char_after_slash == SYM_U;
+        let is_u_big = char_after_slash == SYM_U_BIG;
+
+        if is_u || is_u_big {
+            let len = if is_u { 4 } else { 8 };
+
+            self.get_next_n_bytes(self.ind + 2, len)
+                .map(|unicode_char_bytes| String::from_utf8_lossy(unicode_char_bytes))
+                .and_then(|s| u32::from_str_radix(s.as_ref(), 16).ok())
+                .and_then(char::from_u32)
+                .map_or_else(
+                    || (Token::Unknown(self.src_bytes[self.ind]), 1),
+                    |ch| {
+                        self.result.non_tibetan_chars.push(ch);
+                        (Token::NonTibetanCharIndex(self.result.chars_last_ind()), 2 + len)
+                    },
+                )
+        } else {
+            self.result.non_tibetan_chars.push(char_after_slash as char);
+            (Token::NonTibetanCharIndex(self.result.chars_last_ind()), 2)
+        }
+    }
+
+    fn get_next_n_bytes(&self, from: usize, n: usize) -> Option<&[u8]> {
+        if from >= self.src_len || from + n > self.src_len {
+            return None;
+        }
+
+        Some(&self.src_bytes[from..(from + n)])
     }
 }
 
 pub(crate) struct TokenizeResult {
     pub(crate) tokens: Vec<Token>,
-    pub(crate) non_tibetan: Vec<Range<usize>>,
+    pub(crate) non_tibetan_str_ranges: Vec<Range<usize>>,
+    pub(crate) non_tibetan_chars: Vec<char>,
+}
+
+impl TokenizeResult {
+    fn new(tokens_capacity: usize) -> Self {
+        TokenizeResult {
+            tokens: Vec::with_capacity(tokens_capacity),
+            non_tibetan_str_ranges: Vec::with_capacity(3),
+            non_tibetan_chars: Vec::with_capacity(3),
+        }
+    }
+
+    fn str_ranges_last_ind(&self) -> u8 {
+        self.non_tibetan_str_ranges.len() as u8 - 1
+    }
+
+    fn chars_last_ind(&self) -> u8 {
+        self.non_tibetan_chars.len() as u8 - 1
+    }
 }
 
 pub(crate) struct EwtsToUnicodeTokenMap {
@@ -248,7 +302,7 @@ mod tests {
     ];
 
     #[test]
-    fn ewts_to_unicode_tokenizer_test() {
+    fn etu_tokenizer_test() {
         let map = EwtsToUnicodeTokenMap::create();
 
         TST_DATA.iter().for_each(|td| {
@@ -260,19 +314,21 @@ mod tests {
     }
 
     #[test]
-    fn ewts_to_unicode_tokenizer_non_tibetan_test() {
+    fn etu_tokenizer_non_tibetan_test() {
         let data = [
             (
                 "k [alphabet]h ",
                 &[
                     Token::Con(Con::K),
                     Token::Sym(Sym::Space),
-                    Token::NonTibetan(0),
+                    Token::NonTibetanStrRange(0),
                     Token::Con(Con::H),
                     Token::Sym(Sym::Space),
                 ] as &[Token],
             ),
-            ("k[not_finished", &[Token::Con(Con::K), Token::NonTibetan(0)]),
+            ("k[not_finished", &[Token::Con(Con::K), Token::NonTibetanStrRange(0)]),
+            ("\\u0f40", &[Token::NonTibetanCharIndex(0)]),
+            ("\\u0f4", &[Token::Unknown(92), Token::Vowel(Vowel::U), Token::Sym(Sym::Zero), Token::Con(Con::F), Token::Sym(Sym::Four)]),
         ];
 
         let map = EwtsToUnicodeTokenMap::create();

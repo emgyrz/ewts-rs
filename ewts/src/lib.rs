@@ -14,6 +14,9 @@
 //! ```
 //!
 
+#[cfg(test)]
+mod rules_test;
+
 mod converter;
 mod dict;
 mod tokenizer;
@@ -44,17 +47,12 @@ impl EwtsConverter {
     }
 }
 
-/////
-/////
-/////
-/////
-/////
 #[cfg(test)]
 mod tests {
     use super::*;
 
     static TST_DATA: &[(&str, &str)] = &[
-        ("rkw rk+w ", "རཀྭ་རྐྭ་"),
+        // Standart Tibetan Stacks
         (
             r#"
 rka rga rnga rja rnya rta rda rna rba rma rtsa rdza 
@@ -85,6 +83,9 @@ grwa drwa phywa
 གྲྭ་དྲྭ་ཕྱྭ་
 "#,
         ),
+        // 
+        ("", ""),
+        ("rkw rk+w ", "རཀྭ་རྐྭ་"),
         ("rgyi", "རྒྱི"),
         (
             "oM aHhU~M` badz+ra gu ru pad+ma sid+d+hi hU~M`:",
@@ -93,11 +94,6 @@ grwa drwa phywa
 
         //("va fi &ung","བ༹་ཕི༹་྅ུང" ),
         ("sha ai gaang angs ", "ཤ་ཨཻ་གཨང་ཨངས་"),
-        ("sat+t+wa", "སཏྟྭ"),    // rule 4
-        ("bre+u rdo+e ", "བྲེུ་རྡོེ་"),    // rule 5
-        ("rta r+ta ", "རྟ་རྟ་"), // rule 6
-        ("R+na R+Ya R+ya ", "ཪྣ་ཪྻ་ཪྱ་"), // rule 13
-        ("sarba mang+galaM ", "སརྦ་མངྒལཾ་"), // rule 7
         (
             "@#/_/sangs rgyas chos dang tshogs kyi mchog rnams la/_/byang chub bar du bdag ni skyabs su mchi/_/bdag gyis spyin sogs bgyis pa'i bsod nams kyis/_/'gro la phan phyir sangs rgyas 'grub par shog_!",
             "༄༅། །སངས་རྒྱས་ཆོས་དང་ཚོགས་ཀྱི་མཆོག་རྣམས་ལ། །བྱང་ཆུབ་བར་དུ་བདག་ནི་སྐྱབས་སུ་མཆི། །བདག་གྱིས་སྤྱིན་སོགས་བགྱིས་པའི་བསོད་ནམས་ཀྱིས། །འགྲོ་ལ་ཕན་ཕྱིར་སངས་རྒྱས་འགྲུབ་པར་ཤོག ༈"
@@ -132,11 +128,15 @@ grwa drwa phywa
     }
 
     #[test]
-    fn ewts_to_unicode_non_tibetan_test() {
+    fn etu_non_tibetan_test() {
         let data = [
             ("k [alphabet]_h ", "ཀ་alphabet ཧ་"),
             ("[u]", "u"),
             ("_[u]rjes[U]_[\\]_", " uརྗེསU \\ "),
+            ("\\u0f40", "ཀ"),
+            ("\\U00000f40", "ཀ"),
+            ("phyogs \\1\\0 bcu ", "ཕྱོགས་10་བཅུ་"),
+            ("\\u0f", "\\ཨུ༠ཕ༹"),
         ];
 
         data.iter().for_each(|td| {

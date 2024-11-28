@@ -89,9 +89,14 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                 Token::Unknown(u) => {
                     result.push(*u as char);
                 }
-                Token::NonTibetan(ind) => {
-                    if let Some(range) = self.tokenize_result.non_tibetan.get(*ind as usize) {
+                Token::NonTibetanStrRange(ind) => {
+                    if let Some(range) = self.tokenize_result.non_tibetan_str_ranges.get(*ind as usize) {
                         result.push_str(&self.src[range.clone()]);
+                    }
+                }
+                Token::NonTibetanCharIndex(ind) => {
+                    if let Some(ch) = self.tokenize_result.non_tibetan_chars.get(*ind as usize) {
+                        result.push(*ch);
                     }
                 }
             };

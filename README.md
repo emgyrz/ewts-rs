@@ -2,17 +2,18 @@
 
 Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols
 
-## _in development_
+Fully compliant with the standard. See all rules on
+[The Tibetan and Himalayan Library's site](https://www.thlib.org/reference/transliteration/#!essay=/thl/ewts/rules/) 
+and tests on them here in [rules_test.rs](https://github.com/emgyrz/ewts-rs/blob/master/ewts/src/rules_test.rs) file.
 
-## Parts
 **ewts-rs** includes several separate parts:
 
-#### ewts [![Crates.io Version](https://img.shields.io/crates/v/ewts)](https://crates.io/crates/ewts)
+## ewts [![Crates.io Version](https://img.shields.io/crates/v/ewts)](https://crates.io/crates/ewts)
 Core conversion library written in Rust.
 
 [\[Docs\]](https://docs.rs/ewts/latest/ewts/)
 
-Example:
+#### Example:
 ```rust
 use ewts::{EwtsConverter};
 
@@ -24,10 +25,10 @@ let tib_unicode_str = converter.ewts_to_unicode(ewts_str);
 assert_eq!(tib_unicode_str, "ཨོཾ་ཨཿཧཱུྂ་བཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྂ༔");
 ```
 
-#### ewts-cli [![Crates.io Version](https://img.shields.io/crates/v/ewts-cli)](https://crates.io/crates/ewts-cli)
+## ewts-cli [![Crates.io Version](https://img.shields.io/crates/v/ewts-cli)](https://crates.io/crates/ewts-cli)
 Command line interface for conversion. For use in your favorite console 
 
-Example:
+#### Example:
 ```sh
 $ ewts --input "bkra shis bde legs/"
 # བཀྲ་ཤིས་བདེ་ལེགས།
@@ -42,13 +43,19 @@ $ ewts --help
 #   -h, --help                       Print help
 #   -V, --version                    Print version
 
-# to convert file on Unix-systems run:
+# to convert file:
 $ ewts -i "$(cat /path/to/your/file.txt)"
 ```
 
 
+#### Installation
+For now only with
+```sh
+cargo install ewts-cli
+```
 
-#### ewts-wasm
+
+## ewts-wasm
 WASM-module for use in a browser or somewhere else
 
 _TODO_
