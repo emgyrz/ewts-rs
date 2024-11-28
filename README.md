@@ -48,6 +48,10 @@ $ ewts -i "$(cat /path/to/your/file.txt)"
 ```
 
 
+#### Usage
+[![ewts-cli usage](./assets/ewts-cli-video-preview.png)](./assets/ewts-cli.mp4)
+
+
 #### Installation
 For now only with
 ```sh
