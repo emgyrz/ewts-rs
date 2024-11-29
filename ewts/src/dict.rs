@@ -124,18 +124,19 @@ impl Vowel {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Sym {
-    Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Space, Asterisk, Slash, TwoSlashes, Semicolon, Bar, ExclamMark, Colon, Underscore, Equal, Less, Greater, LParen, RParen, At, Hash, S, Percent,
+    Space, Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Asterisk, Slash, TwoSlashes, Semicolon, Bar, ExclamMark, Colon, Underscore, Equal, Less, Greater, LParen, RParen, At, Hash, S, Percent,
 }
 
 impl Sym {
     pub(crate) fn list() -> &'static [Sym] {
         &[
-            Sym::Zero, Sym::One, Sym::Two, Sym::Three, Sym::Four, Sym::Five, Sym::Six, Sym::Seven, Sym::Eight, Sym::Nine, Sym::Space, Sym::Asterisk, Sym::Slash, Sym::TwoSlashes, Sym::Semicolon, Sym::Bar, Sym::ExclamMark, Sym::Colon, Sym::Underscore, Sym::Equal, Sym::Less, Sym::Greater, Sym::LParen, Sym::RParen, Sym::At, Sym::Hash, Sym::S, Sym::Percent,
+            Sym::Space, Sym::Zero, Sym::One, Sym::Two, Sym::Three, Sym::Four, Sym::Five, Sym::Six, Sym::Seven, Sym::Eight, Sym::Nine, Sym::Asterisk, Sym::Slash, Sym::TwoSlashes, Sym::Semicolon, Sym::Bar, Sym::ExclamMark, Sym::Colon, Sym::Underscore, Sym::Equal, Sym::Less, Sym::Greater, Sym::LParen, Sym::RParen, Sym::At, Sym::Hash, Sym::S, Sym::Percent,
         ]
     }
 
     pub(crate) fn get(&self) -> EwtsAnUnicodeStr {
         match &self {
+            Sym::Space => (" ", "\u{0f0b}"),
             Sym::Zero => ("0", "\u{0f20}"),
             Sym::One => ("1", "\u{0f21}"),
             Sym::Two => ("2", "\u{0f22}"),
@@ -146,7 +147,6 @@ impl Sym {
             Sym::Seven => ("7", "\u{0f27}"),
             Sym::Eight => ("8", "\u{0f28}"),
             Sym::Nine => ("9", "\u{0f29}"),
-            Sym::Space => (" ", "\u{0f0b}"),
             Sym::Asterisk => ("*", "\u{0f0c}"),
             Sym::Slash => ("/", "\u{0f0d}"),
             Sym::TwoSlashes => ("//", "\u{0f0e}"),

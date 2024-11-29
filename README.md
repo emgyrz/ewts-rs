@@ -48,7 +48,7 @@ $ ewts -i "$(cat /path/to/your/file.txt)"
 ```
 
 
-#### Usage
+#### Demo
 https://github.com/user-attachments/assets/28f62452-abf4-437f-b973-666a6a36403e
 
 
@@ -59,10 +59,10 @@ cargo install ewts-cli
 ```
 
 
-## ewts-wasm
-WASM-module for using in browser, nodejs or somewhere else
-[![Npm Version](https://img.shields.io/npm/v/ewts)](https://www.npmjs.com/package/ewts)
+## ewts-wasm [![Npm Version](https://img.shields.io/npm/v/ewts)](https://www.npmjs.com/package/ewts)
+WASM-module for using in browser, nodejs or somewhere else.
 
+See details in [ewts-wasm/README.md](https://github.com/emgyrz/ewts-rs/tree/master/ewts-wasm).
 
 #### Installation
 ```sh

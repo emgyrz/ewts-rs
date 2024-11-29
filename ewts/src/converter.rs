@@ -154,7 +154,7 @@ pub(crate) struct EwtsToUnicodeConverterMaps {
 
 impl EwtsToUnicodeConverterMaps {
     pub(crate) fn create() -> Self {
-        let mut sup_sub_map = HashMap::new();
+        let mut sup_sub_map = HashMap::with_capacity(21);
 
         SUBSCRIPTS.iter().for_each(|s| {
             let sub = sup_sub_map.entry(s.0).or_insert(SubSupCon::new());

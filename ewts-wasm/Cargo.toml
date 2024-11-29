@@ -1,6 +1,6 @@
 [package]
 name = "ewts-wasm"
-version = "0.1.0"
+version = "0.1.1"
 description = "Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols (wasm lib)"
 categories = ["text-processing", "internationalization", "encoding", "localization", "wasm"]
 edition.workspace = true

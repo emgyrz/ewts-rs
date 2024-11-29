@@ -10,14 +10,20 @@ It is part of set of apps/libs called **ewts-rs**.
 See more [here](https://github.com/emgyrz/ewts-rs)
 
 
-#### Installation
+## Installation
 ```sh
 npm install ewts
 ```
 
-#### Usage
+## Usage
+Main module in package (`'ewts/index.js`') at this time can only be used with bundlers (webpack, rollup, etc.).
+If you don't use them, you can import submodule that natively supports by nodejs(`ewts/nodejs`) 
+or by browsers (`'ewts/web'`)
+
 ```javascript
 import {EwtsConverter} from 'ewts'
+//                  or from 'ewts/nodejs'
+//                  or from 'ewts/web'
 
 const converter = new EwtsConverter()
 
@@ -27,8 +33,8 @@ const tibUnicodeStr = converter.ewtsToUnicode(ewtsStr)
 
 console.log(tibUnicodeStr)
 // "ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ།"
-
 ```
 
-
+#### Examples
+Library usage examples stored at [./examples/](https://github.com/emgyrz/ewts-rs/blob/master/ewts-wasm/examples) dir.
 

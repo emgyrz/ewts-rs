@@ -1,20 +1,37 @@
 #!/usr/bin/env node
 
 const fs = require('fs')
-const path = require('path')
+const path = require('path');
 
-const pckgPath = path.join(__dirname, 'pkg/package.json')
-const pckg = require(pckgPath)
 
-pckg.name = "ewts";
+['./pkg', './pkg/nodejs', './pkg/web']
+  .forEach(dir => {
+    const pckgPath = path.join(__dirname, dir, 'package.json')
+    const pckg = require(pckgPath);
 
-["ewts.js", "ewts.d.ts"].forEach(p => pckg.files.splice(pckg.files.indexOf(p), 1) );
-["index.js", "index.d.ts", "index.node.js", "index.web.js"]
-  .forEach(p => pckg.files.push(p) );
+    renameMainFilesAsIndex(pckg)
 
-pckg.main = "index.js"
-pckg.types = "index.d.ts"
-pckg.sideEffects = ["index.js"]
+    fs.writeFileSync(pckgPath, JSON.stringify(pckg, null, 2))
+  })
 
-fs.writeFileSync("pkg/package.json", JSON.stringify(pckg, null, 2))
 
+function renameMainFilesAsIndex(pckg) {
+  pckg.name = 'ewts'
+  pckg.files = renameFilesInArr(pckg.files)
+
+  pckg.main = "index.js"
+  pckg.types = "index.d.ts"
+
+  if (pckg.sideEffects) {
+    pckg.sideEffects = renameFilesInArr(pckg.sideEffects)
+  }
+
+  function renameFilesInArr(arr) {
+    return arr.map(fName => {
+      if (fName.match(/((ewts\.js)|(ests\.d\.ts))$/)) {
+        return fName.replace('ewts', 'index')
+      }
+      return fName
+    })
+  }
+}
