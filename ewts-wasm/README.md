@@ -17,7 +17,7 @@ npm install ewts
 
 ## Usage
 Main module in package (`'ewts/index.js`') at this time can only be used with bundlers (webpack, rollup, etc.).
-If you don't use them, you can import submodule that natively supports by nodejs(`ewts/nodejs`) 
+If you don't use them, you can import submodule that natively supported by nodejs(`ewts/nodejs`) 
 or by browsers (`'ewts/web'`)
 
 ```javascript
@@ -36,5 +36,5 @@ console.log(tibUnicodeStr)
 ```
 
 #### Examples
-Library usage examples stored at [./examples/](https://github.com/emgyrz/ewts-rs/blob/master/ewts-wasm/examples) dir.
+Library usage examples stored at [./examples](https://github.com/emgyrz/ewts-rs/blob/master/ewts-wasm/examples) dir.
 

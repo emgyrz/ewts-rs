@@ -91,6 +91,7 @@ console.log(tibUnicodeStr)
 - The dictionary was taken from [here](https://github.com/rogerespel/ewts-js/blob/main/src/EwtsConverter.mjs)
 
 ## Misc
-This converter does not perform any checks, substitutions, transformations - if you have written incorrectly, 
+- Conversion from Tibetan unicode isn't implemented yet but will be.
+- This converter does not perform any checks, substitutions, transformations - if you have written incorrectly, 
 you will get incorrect characters in the result.
 
