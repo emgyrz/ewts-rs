@@ -60,9 +60,30 @@ cargo install ewts-cli
 
 
 ## ewts-wasm
-WASM-module for use in a browser or somewhere else
+WASM-module for using in browser, nodejs or somewhere else
+[![Npm Version](https://img.shields.io/npm/v/ewts)](https://www.npmjs.com/package/ewts)
 
-_TODO_
+
+#### Installation
+```sh
+npm install ewts
+```
+
+#### Usage
+```javascript
+import {EwtsConverter} from 'ewts'
+
+const converter = new EwtsConverter()
+
+const ewtsStr = "oM ma Ni pad+me hU~M/"
+
+const tibUnicodeStr = converter.ewtsToUnicode(ewtsStr)
+
+console.log(tibUnicodeStr)
+// "ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ།"
+
+```
+
 
 
 ## References
