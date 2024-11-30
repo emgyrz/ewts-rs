@@ -5,7 +5,7 @@ const path = require('path')
 
 const jsewts = require('jsewts')
 const tibEwtsConverterMod = require('tibetan-ewts-converter')
-const ewtsWasm = require('../ewts-wasm/pkg/nodejs')
+const ewtsWasm = require('ewts/nodejs')
 
 const ewtsText = fs.readFileSync(path.join(__dirname, './sample_ewts_text.txt')).toString()
 const fSize = fs.statSync('./sample_ewts_text.txt').size

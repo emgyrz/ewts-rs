@@ -4,16 +4,29 @@ const fs = require('fs')
 const path = require('path');
 
 
-['./pkg', './pkg/nodejs', './pkg/web']
-  .forEach(dir => {
-    const pckgPath = path.join(__dirname, dir, 'package.json')
-    const pckg = require(pckgPath);
+const pckgs = ['.', 'nodejs', 'web']
+  .map(dir => {
+    const pckg = require(pckgPath(dir));
 
     renameMainFilesAsIndex(pckg)
-
-    fs.writeFileSync(pckgPath, JSON.stringify(pckg, null, 2))
+    
+    return { dir, pckg }
   })
 
+pckgs.slice(1).forEach(({dir, pckg}) => {
+  pckg.files.forEach(f => {
+    pckgs[0].pckg.files.push(dir + '/' + f)
+  })
+  pckgs[0].pckg.files.push(dir + '/package.json')
+})
+
+pckgs.forEach(({dir, pckg}) => {
+  fs.writeFileSync(pckgPath(dir), JSON.stringify(pckg, null, 2))
+})
+
+function pckgPath(dir) {
+  return path.join(__dirname, './pkg', dir, 'package.json')
+}
 
 function renameMainFilesAsIndex(pckg) {
   pckg.name = 'ewts'
@@ -28,7 +41,7 @@ function renameMainFilesAsIndex(pckg) {
 
   function renameFilesInArr(arr) {
     return arr.map(fName => {
-      if (fName.match(/((ewts\.js)|(ests\.d\.ts))$/)) {
+      if (fName.match(/((ewts\.js)|(ewts\.d\.ts))$/)) {
         return fName.replace('ewts', 'index')
       }
       return fName

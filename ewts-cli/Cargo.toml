@@ -1,6 +1,6 @@
 [package]
 name = "ewts-cli"
-version = "0.1.1"
+version = "0.1.2"
 description = "Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols (cli)"
 categories = ["text-processing", "internationalization", "encoding", "localization", "command-line-utilities"]
 authors.workspace = true
@@ -12,7 +12,7 @@ license.workspace = true
 
 [dependencies]
 clap = { version = "4.5.21", features = ["derive"] }
-ewts = { path = "../ewts", version = "0.1.1" }
+ewts = { path = "../ewts", version = "0.1.2" }
 
 [[bin]]
 name = "ewts"
