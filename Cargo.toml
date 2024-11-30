@@ -4,7 +4,8 @@ resolver = "2"
 members = [
   "ewts-cli",
   "ewts", 
-  "ewts-wasm",
+  "ewts-wasm", 
+  "bench",
 ]
 
 [workspace.package]

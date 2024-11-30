@@ -33,11 +33,7 @@ pub(crate) enum TokenType {
     Con,
     Vowel,
     ConSpec,
-
-    // TODO: unite to Other?
-    Sym,
-    Final,
-    //Unknown,
+    Other,
 }
 
 pub(crate) struct EwtsToUnicodeTokenizer<'a> {

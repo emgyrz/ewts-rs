@@ -21,7 +21,7 @@ impl<'a> EwtsToUnicodeConverter<'a> {
             ind: 0,
             tokenize_result,
             tokens_len: tokenize_result.tokens.len(),
-            prev_type: TokenType::Sym,
+            prev_type: TokenType::Other,
             prev_con_combined: false,
             last_con_spec_is_plus: false,
         };
@@ -71,33 +71,36 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                     } else {
                         result.push_str(a_chen_tib_str);
                     }
-                    self.prev_type = TokenType::Vowel;
                     result.push_str(v.get().1);
+                    self.prev_type = TokenType::Vowel;
                 }
                 Token::Sym(t) => {
-                    self.prev_type = TokenType::Sym;
                     result.push_str(t.get().1);
+                    self.prev_type = TokenType::Other;
                 }
                 Token::ConSpec(s) => {
                     self.last_con_spec_is_plus = *s == ConSpec::Plus;
                     self.prev_type = TokenType::ConSpec;
                 }
                 Token::Final(f) => {
-                    self.prev_type = TokenType::Final;
                     result.push_str(f.get().1);
+                    self.prev_type = TokenType::Other;
                 }
                 Token::Unknown(u) => {
                     result.push(*u as char);
+                    self.prev_type = TokenType::Other;
                 }
                 Token::NonTibetanStrRange(ind) => {
                     if let Some(range) = self.tokenize_result.non_tibetan_str_ranges.get(*ind as usize) {
                         result.push_str(&self.src[range.clone()]);
                     }
+                    self.prev_type = TokenType::Other;
                 }
                 Token::NonTibetanCharIndex(ind) => {
                     if let Some(ch) = self.tokenize_result.non_tibetan_chars.get(*ind as usize) {
                         result.push(*ch);
                     }
+                    self.prev_type = TokenType::Other;
                 }
             };
             self.ind += 1;
