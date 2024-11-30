@@ -1,8 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-// Normally here should be `require('ewts/nodejs')`
-const {EwtsConverter} = require('../pkg/nodejs')
+const {EwtsConverter} = require('ewts/nodejs')
 
 const converter = new EwtsConverter()
 

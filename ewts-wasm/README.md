@@ -20,6 +20,13 @@ Main module in package (`'ewts/index.js`') at this time can only be used with bu
 If you don't use them, you can import submodule that natively supported by nodejs(`ewts/nodejs`) 
 or by browsers (`'ewts/web'`)
 
+More info about difference between submodules in `ewts` package can be found 
+on [wasm-pack documentation](https://rustwasm.github.io/wasm-pack/book/commands/build.html#target):
+- `ewts`(`ewts/index.js` etc.) built with `--target bundler` flag
+- `ewts/nodejs` with `--target nodejs`
+- and `ewts/web` built with `--target web` flag
+
+
 ```javascript
 import {EwtsConverter} from 'ewts'
 //                  or from 'ewts/nodejs'
@@ -38,3 +45,16 @@ console.log(tibUnicodeStr)
 #### Examples
 Library usage examples stored at [./examples](https://github.com/emgyrz/ewts-rs/blob/master/ewts-wasm/examples) dir.
 
+To view it at work do:
+```sh
+git clone https://github.com/emgyrz/ewts-rs.git
+cd ewts-rs/ewts-wasm/examples
+
+npm i
+
+# prints to console conversion result
+node ./usage_in_node.js
+
+# opens browser with simple page where `ewts` is used
+npx http-server . -o "/usage_in_browser_without_bundlers.html"
+```

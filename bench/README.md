@@ -30,7 +30,7 @@ The following programs should be available from your terminal:
 - java
 - curl
 
-If you have it all, then clone this repo, go to `brench` directory and simply run `./run_bench.sh`
+If you have it all, then clone this repo, go to `bench` directory and simply run `./run_bench.sh`
 ```sh
 git clone https://github.com/emgyrz/ewts-rs.git
 cd ./ewts-rs/bench

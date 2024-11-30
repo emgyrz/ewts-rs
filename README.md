@@ -102,7 +102,7 @@ Especially considering that the current implementation is several times faster t
 | [ewts-converter (java)](https://github.com/buda-base/ewts-converter) | ~1822 Kb/s (14.54x) | [java_bench.java](https://github.com/emgyrz/ewts-rs/blob/master/bench/java_bench.java)             |
 | [pyewts](https://github.com/OpenPecha/pyewts)                        | ~274 Kb/s (96.7x)   | [python_tools_bench.py](https://github.com/emgyrz/ewts-rs/blob/master/bench/python_tools_bench.py) |
 
-A little bit more info at [bench/README](https://github.com/emgyrz/ewts-rs/tree/master/bench)
+A little bit more info is at [bench/README](https://github.com/emgyrz/ewts-rs/tree/master/bench)
 
 
 
