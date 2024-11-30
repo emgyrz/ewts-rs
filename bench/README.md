@@ -36,3 +36,7 @@ git clone https://github.com/emgyrz/ewts-rs.git
 cd ./ewts-rs/bench
 ./run_bench.sh
 ```
+
+On my machine it looks like this:
+![bench screenshot](https://github.com/user-attachments/assets/8b88c21c-6881-490a-a168-fa412e4e5dc2)
+
