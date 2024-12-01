@@ -9,6 +9,9 @@ Fully compliant with the standard. See all rules on
 [The Tibetan and Himalayan Library's site](https://www.thlib.org/reference/transliteration/#!essay=/thl/ewts/rules/) 
 and tests on them here in [rules_test.rs](https://github.com/emgyrz/ewts-rs/blob/master/ewts/src/rules_test.rs) file.
 
+> [!IMPORTANT]  
+> Currently, only the conversion from EWTS to Tibetan Unicode is implemented. The conversion in the opposite direction will be coming soon.
+
 **ewts-rs** includes several separate parts:
 
 ## ewts [![Crates.io Version](https://img.shields.io/crates/v/ewts)](https://crates.io/crates/ewts)
@@ -110,11 +113,12 @@ A little bit more info is at [bench/README](https://github.com/emgyrz/ewts-rs/tr
 
 
 ## References
-- Ewts symbols [table](https://www.thlib.org/reference/transliteration/#!essay=/thl/ewts/tables/)
-- The dictionary was taken from [here](https://github.com/rogerespel/ewts-js/blob/main/src/EwtsConverter.mjs)
+- Ewts symbols [table](https://www.thlib.org/reference/transliteration/#!essay=/thl/ewts/tables/).
+- Initially, the character matches for  are taken 
+  from [here](https://github.com/rogerespel/ewts-js/blob/main/src/EwtsConverter.mjs).
+  Thanks for not having to type them manually.
 
 ## Misc
-- Conversion from Tibetan unicode isn't implemented yet but will be.
 - This converter does not perform any checks, substitutions, transformations - if you have written incorrectly, 
 you will get incorrect characters in the result.
 

@@ -2,6 +2,8 @@
 
 WASM-module to convert text from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols
 
+#### [Demo page](https://emgyrz.github.io/ewts-rs/)
+
 Fully compliant with the standard. See all rules on
 [The Tibetan and Himalayan Library's site](https://www.thlib.org/reference/transliteration/#!essay=/thl/ewts/rules/) 
 and tests on them here in [rules_test.rs](https://github.com/emgyrz/ewts-rs/blob/master/ewts/src/rules_test.rs) file.
