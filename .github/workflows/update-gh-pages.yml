@@ -13,20 +13,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        working-directory: ./demo
 
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      - run: npm i --force
+      - run: cd demo && npm i --force
 
       - name: Generate demo
-        run: run build
+        run: cd demo && npm run build
 
       - name: Deploy it to GH pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./demo/dist
