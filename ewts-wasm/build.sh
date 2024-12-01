@@ -11,7 +11,7 @@ rename_main_files () {
 
 build_wasm_and_publish () {
   rm -rf ./pkg || true
-  cargo build
+  cargo build --release
 
   wasm-pack build --target bundler --out-dir pkg --release
   rename_main_files ./pkg

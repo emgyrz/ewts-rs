@@ -43,7 +43,12 @@ console.log(tibUnicodeStr)
 ```
 
 #### Examples
-Library usage examples stored at [./examples](https://github.com/emgyrz/ewts-rs/blob/master/ewts-wasm/examples) dir.
+
+Version built for bundlers is used for demo page:
+[sources](https://github.com/emgyrz/ewts-rs/tree/master/demo)
+and [result](https://emgyrz.github.io/ewts-rs/).
+
+Other examples stored at [./examples](https://github.com/emgyrz/ewts-rs/blob/master/ewts-wasm/examples) dir.
 
 To view it at work do:
 ```sh
