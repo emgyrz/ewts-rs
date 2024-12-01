@@ -1,6 +1,7 @@
 # ewts-rs
 
-Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols
+Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols. 
+Written in Rust and can be used, of cource, as Rust library, also as CLI tool and in JS-environment.
 
 Fully compliant with the standard. See all rules on
 [The Tibetan and Himalayan Library's site](https://www.thlib.org/reference/transliteration/#!essay=/thl/ewts/rules/) 
@@ -9,13 +10,13 @@ and tests on them here in [rules_test.rs](https://github.com/emgyrz/ewts-rs/blob
 **ewts-rs** includes several separate parts:
 
 ## ewts [![Crates.io Version](https://img.shields.io/crates/v/ewts)](https://crates.io/crates/ewts)
-Core conversion library written in Rust.
+Core conversion library.
 
-[\[Docs\]](https://docs.rs/ewts/latest/ewts/)
+[\[rust docs\]](https://docs.rs/ewts/latest/ewts/)
 
 #### Example:
 ```rust
-use ewts::{EwtsConverter};
+use ewts::EwtsConverter;
 
 let converter = EwtsConverter::create();
 let ewts_str = "oM aHhU~M` badz+ra gu ru pad+ma sid+d+hi hU~M`:";

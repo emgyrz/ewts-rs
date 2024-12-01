@@ -1,0 +1,206 @@
+:root {
+  font-family: Philosopher, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-size: 16px;
+
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --color_orange: #EB5B00;
+  --color_pink: #D91656;
+}
+
+
+*, *:after, *:before {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'Myilam Wind Horse';
+  src: url('../fonts/Myilam_Wind\ Horse.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.tib {
+  font-family: 'Myilam Wind Horse';
+  font-size: 1.6em;
+  line-height: 2.1em;
+  white-space: pre-wrap;
+}
+
+a {
+  font-weight: 500;
+  color: var(--color_pink);
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--color_orange);
+}
+
+p {
+  font-size: 1.3em;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  padding: 5vw 7%;
+}
+
+h1 {
+  font-size: 3em;
+  line-height: 1.1;
+  font-weight: 400;
+  margin-top: 0;
+  margin-bottom: 2vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.desc {
+  border-bottom: 1px solid #D9165655;
+  margin: 1.2em 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  h3 {
+    font-weight: normal;
+    font-size: 1.3em;
+    margin: 0.1em 0;
+  }
+}
+
+textarea {
+  max-width: 100%;
+  padding: 0.3em;
+  width: 100%;
+  min-width: 100%;
+  min-height: 150px;
+  max-height: 40vh;
+  font-size: 1.2em;
+  color: rgba(255, 255, 255, 0.77);
+  background: #474747;
+  border: 1px solid #474747;
+  box-shadow: #EB5B002E 0px 7px 29px 0px; 
+  border-radius: 2px;
+  transition: border .2s;
+
+  &:focus {
+    border-color: var(--color_pink);
+    outline: none;
+  }
+}
+
+button {
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: opacity 0.25s;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.copyResult {
+  padding: 0.5em 0.6em;
+  background: transparent;
+
+  svg {
+    width: 20px;
+    fill: var(--color_pink);
+    transition: fill .2s;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: transparent;
+    svg {
+      fill: var(--color_orange);
+    }
+  }
+}
+
+
+.convertedResult {
+  min-height: 150px;
+  max-height: 50vh;
+  overflow-y: auto;
+  color: var(--color_orange);
+  position: relative;
+  padding-bottom: 8px;
+
+  &.empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:after {
+      display: block;
+    }
+  }
+
+  &:after {
+    display: none;
+    content: "ཨ";
+    font-size: 3em;
+    animation: a 5s ease-in-out infinite alternate;
+  }
+
+  @keyframes a {
+  from {
+    color: var(--color_orange);
+  }
+  to {
+    color: var(--color_pink);
+  }
+  }
+
+}
+
+.links {
+  text-align: right;
+  flex: 1;
+  margin-left: 1.5em;
+
+  .link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.1em;
+    transition: color .2s;
+  }
+
+  .ico {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background: transparent center no-repeat;
+    background-size: 95%;
+    margin-right: 8px;
+  }
+
+  .github .ico {
+    background-image: url(./assets/github-mark-white.svg);
+  }
+}
+
+
+
+
+
+
