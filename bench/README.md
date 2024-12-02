@@ -38,5 +38,7 @@ cd ./ewts-rs/bench
 ```
 
 On my machine it looks like this:
+<kbd>
 ![bench screenshot](https://github.com/user-attachments/assets/8b88c21c-6881-490a-a168-fa412e4e5dc2)
+</kbd>
 

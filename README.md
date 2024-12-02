@@ -3,7 +3,14 @@
 Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols. 
 Written in Rust and can be used, of cource, as Rust library, also as CLI tool and in JS-environment.
 
-#### [Demo page](https://emgyrz.github.io/ewts-rs/)
+
+
+<p align="center">
+  <br />
+  <kbd><img width="300" src="https://github.com/user-attachments/assets/a1d52bcf-70ea-42b9-87d0-0dee860988d9"></kbd>
+  <h4 align="center"><a href="https://emgyrz.github.io/ewts-rs/">See demo page</a></h4>
+  <br />
+</p>
 
 Fully compliant with the standard. See all rules on
 [The Tibetan and Himalayan Library's site](https://www.thlib.org/reference/transliteration/#!essay=/thl/ewts/rules/) 
@@ -12,6 +19,7 @@ and tests on them here in [rules_test.rs](https://github.com/emgyrz/ewts-rs/blob
 > [!IMPORTANT]  
 > Currently, only the conversion from EWTS to Tibetan Unicode is implemented. The conversion in the opposite direction will be coming soon.
 
+<br />
 **ewts-rs** includes several separate parts:
 
 ## ewts [![Crates.io Version](https://img.shields.io/crates/v/ewts)](https://crates.io/crates/ewts)
@@ -121,4 +129,5 @@ A little bit more info is at [bench/README](https://github.com/emgyrz/ewts-rs/tr
 ## Misc
 - This converter does not perform any checks, substitutions, transformations - if you have written incorrectly, 
 you will get incorrect characters in the result.
+
 
