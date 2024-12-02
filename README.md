@@ -4,13 +4,11 @@ Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode s
 Written in Rust and can be used, of cource, as Rust library, also as CLI tool and in JS-environment.
 
 
+![emaho](https://github.com/user-attachments/assets/a1d52bcf-70ea-42b9-87d0-0dee860988d9)
+#### [See demo page](https://emgyrz.github.io/ewts-rs/)
+<br />
 
-<p align="center">
-  <br />
-  <kbd><img width="300" src="https://github.com/user-attachments/assets/a1d52bcf-70ea-42b9-87d0-0dee860988d9"></kbd>
-  <h4 align="center"><a href="https://emgyrz.github.io/ewts-rs/">See demo page</a></h4>
-  <br />
-</p>
+
 
 Fully compliant with the standard. See all rules on
 [The Tibetan and Himalayan Library's site](https://www.thlib.org/reference/transliteration/#!essay=/thl/ewts/rules/) 

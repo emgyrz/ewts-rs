@@ -2,12 +2,12 @@
 
 WASM-module to convert text from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols
 
-<p align="center">
-  <br />
-  <kbd><img width="300" src="https://github.com/user-attachments/assets/a1d52bcf-70ea-42b9-87d0-0dee860988d9"></kbd>
-  <h4 align="center"><a href="https://emgyrz.github.io/ewts-rs/">See demo page</a></h4>
-  <br />
-</p>
+
+![emaho](https://github.com/user-attachments/assets/a1d52bcf-70ea-42b9-87d0-0dee860988d9)
+#### [See demo page](https://emgyrz.github.io/ewts-rs/)
+<br />
+
+
 
 Fully compliant with the standard. See all rules on
 [The Tibetan and Himalayan Library's site](https://www.thlib.org/reference/transliteration/#!essay=/thl/ewts/rules/) 
