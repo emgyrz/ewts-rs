@@ -1,0 +1,23 @@
+[package]
+name = "ewts-c"
+version = "0.1.0"
+description = "Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols (c lib)"
+categories = ["text-processing", "internationalization", "encoding", "localization", "c"]
+edition.workspace = true
+authors.workspace = true
+repository.workspace = true
+keywords.workspace = true
+homepage.workspace = true
+license.workspace = true
+
+build = "build.rs"
+
+[lib]
+name = "ewts"
+crate-type = ["cdylib"]
+
+[build-dependencies]
+cbindgen = "0.27.0"
+
+[dependencies]
+ewts = {path = "../ewts"}

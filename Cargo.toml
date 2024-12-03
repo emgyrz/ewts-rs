@@ -5,7 +5,8 @@ members = [
   "ewts-cli",
   "ewts", 
   "ewts-wasm", 
-  "bench",
+  "bench", 
+  "ewts-c",
 ]
 
 [workspace.package]
