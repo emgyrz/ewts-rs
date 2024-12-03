@@ -15,9 +15,9 @@ pub unsafe extern "C" fn ewts_to_unicode(ewts_src: *const c_char) -> *const c_ch
 
 
 /// # Safety
-/// The ptr should be a string returned from convert function
+/// The ptr should be a pointer to the string returned from convert function
 #[no_mangle]
-pub unsafe extern fn free_string(ptr: *const c_char) {
+pub unsafe extern fn free_ewts_string(ptr: *const c_char) {
     // Take the ownership back to rust and drop the owner
     let _ = CString::from_raw(ptr as *mut _);
 }

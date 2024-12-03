@@ -11,5 +11,5 @@ cdef extern from *:
   const char *ewts_to_unicode(const char *ewts_src);
 
   # # Safety
-  # The ptr should be a string returned from convert function
-  void free_string(const char *ptr);
+  # The ptr should be a pointer to the string returned from convert function
+  void free_ewts_string(const char *ptr);
