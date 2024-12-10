@@ -1,4 +1,4 @@
-/* g++ ../../target/release/libewts.dylib example.cpp */
+/* g++ ../../target/release/libewts.dylib example.cpp -O2 && ./a.out */
 
 #include "../ewts-cpp.h"
 #include <string>
@@ -32,15 +32,17 @@ string read_sample_ewts_text() {
 
 
 
-
 int main()
 {
   string src = read_sample_ewts_text();
-  const char * converted = ewts_to_unicode(src.c_str());
+  uintptr_t converter_ptr = create_ewts_converter();
 
-  printf("Input string is:\n%s", src.c_str());
-  printf("Converted string is:\n%s", converted);
+  const char * converted_str = ewts_to_unicode(converter_ptr, src.c_str());
 
-  free_ewts_string(converted);
+  printf("Input string is:\n%s\n", src.c_str());
+  printf("Converted string is:\n%s", converted_str);
+
+  free_ewts_string(converted_str);
+  free_ewts_converter(converter_ptr);
 }
 

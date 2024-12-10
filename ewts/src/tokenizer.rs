@@ -7,7 +7,8 @@ static SYM_BRACKET_R: u8 = b']';
 static SYM_U: u8 = b'u';
 static SYM_U_BIG: u8 = b'U';
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[cfg_attr(test, derive(Debug))]
+#[derive(PartialEq, Eq, Clone)]
 pub(crate) enum Token {
     Con(Con),
     Vowel(Vowel),
@@ -28,7 +29,7 @@ impl Token {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(PartialEq, Eq)]
 pub(crate) enum TokenType {
     Con,
     Vowel,
@@ -44,7 +45,7 @@ pub(crate) struct EwtsToUnicodeTokenizer<'a> {
     result: TokenizeResult,
 }
 
-impl<'a> EwtsToUnicodeTokenizer<'a> {
+impl EwtsToUnicodeTokenizer<'_> {
     pub(crate) fn tokenize(map: &EwtsToUnicodeTokenMap, src: &str) -> TokenizeResult {
         let src_bytes = src.as_bytes();
         let src_len = src_bytes.len();
@@ -303,8 +304,6 @@ mod tests {
 
         TST_DATA.iter().for_each(|td| {
             let result = EwtsToUnicodeTokenizer::tokenize(&map, td.0);
-            //println!("tst:!!!!!!!! src -- {:?} ", std::mem::size_of::<Token>());
-            println!("tst: src -- {:?} | result -- {:?}", td.0, result.tokens);
             assert_eq!(result.tokens, td.1);
         });
     }
@@ -331,7 +330,6 @@ mod tests {
 
         data.iter().for_each(|td| {
             let result = EwtsToUnicodeTokenizer::tokenize(&map, td.0);
-            println!("tst: src -- {:?} | result -- {:?}", td.0, result.tokens);
             assert_eq!(result.tokens, td.1);
         });
     }

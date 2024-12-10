@@ -6,6 +6,7 @@ echo "EWTS benchmarks: preparing..."
 cargo build --release
 npm i
 pip install pyewts -t ./deps/
+g++ -O2 ../target/release/libewts.dylib -std=c++20 cpp_bench.cpp -o ./deps/cpp_bench.out
 
 prepare_java () {
   if [ ! -f ./deps/commons-lang3.tar.gz ]; then
@@ -25,6 +26,7 @@ prepare_java
 echo -e "\nEWTS benchmarks:"
 
 ../target/release/bench
+./deps/cpp_bench.out
 ./js_tools_bench.js
 java -classpath deps/commons-lang3-3.17.0/commons-lang3-3.17.0.jar:deps/EwtsConverter.jar: java_bench.java
 ./python_tools_bench.py

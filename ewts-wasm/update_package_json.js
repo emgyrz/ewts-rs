@@ -41,8 +41,8 @@ function renameMainFilesAsIndex(pckg) {
 
   function renameFilesInArr(arr) {
     return arr.map(fName => {
-      if (fName.match(/((ewts\.js)|(ewts\.d\.ts))$/)) {
-        return fName.replace('ewts', 'index')
+      if (fName.match(/((ewts_wasm\.js)|(ewts_wasm\.d\.ts))$/)) {
+        return fName.replace('ewts_wasm', 'index')
       }
       return fName
     })

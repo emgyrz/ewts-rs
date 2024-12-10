@@ -4,16 +4,9 @@ pub(crate) type EwtsAnUnicodeStr = (&'static str, &'static str);
 
 static EMPTY: &str = "";
 
-//
-// TODO: del?
-//static VOW_R_MINUS_I: (&str, &str) = ("r-i", "\u{0fb2}\u{0f80}");
-//static VOW_R_MINUS_I_BIG: (&str, &str) = ("r-I", "\u{0fb2}\u{0f71}\u{0f80}");
-//static VOW_L_MINUS_I: (&str, &str) = ("l-i", "\u{0fb3}\u{0f80}");
-//static VOW_L_MINUS_I_BIG: (&str, &str) = ("l-I", "\u{0fb3}\u{0f71}\u{0f80}");
-//
 
-//TODO: remove Debug,
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[cfg_attr(test, derive(Debug))]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub(crate) enum Con {
     K, Kh, G, Gh, GPlusH, Ng, C, Ch, J, Ny, TBig, MinusT, TBigH, MinusTh, DBig, MinusD, DBigH, DBigPlusH, MinusDh, MinusDPlusH, NBig, MinusN, T, Th, D, Dh, DPlusH, N, P, Ph, B, Bh, BPlusH, M, Ts, Tsh, Dz, Dzh, DzPlusH, W, Zh, Z, A, Y, R, L, Sh, SBigH, MinusSh, S, H, AChen, WBig, YBig, RBig, F, V, Paluta, 
 }
@@ -93,7 +86,9 @@ impl Con {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+
+#[cfg_attr(test, derive(Debug))]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Vowel {
     ABig, I, IBig, U, UBig, E, AI, O, AU, MinusI, MinusIBig,
 }
@@ -122,7 +117,9 @@ impl Vowel {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+
+#[cfg_attr(test, derive(Debug))]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Sym {
     Space, Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Asterisk, Slash, TwoSlashes, Semicolon, Bar, ExclamMark, Colon, Underscore, Equal, Less, Greater, LParen, RParen, At, Hash, S, Percent,
 }
@@ -168,7 +165,9 @@ impl Sym {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+
+#[cfg_attr(test, derive(Debug))]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Final {
     Anusvara, NadaBindu, ChandraBindu, Nuqta, ChandraNuqta, Visarga, Halanta, TsaPhru,
 }
@@ -193,7 +192,9 @@ impl Final {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+
+#[cfg_attr(test, derive(Debug))]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub(crate) enum ConSpec {
     Plus, Period,
 }
@@ -212,7 +213,9 @@ impl ConSpec {
         }
     }
 
-
+    pub(crate) fn is_plus(&self) -> bool {
+        matches!(self, ConSpec::Plus)
+    }
 }
 
 
@@ -331,4 +334,3 @@ pub(crate) static SUBSCRIPTS: Combinations<'static> = &[
         ]
     ),
 ];
-

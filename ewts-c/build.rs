@@ -30,6 +30,5 @@ fn lang_as_str(lang: Language) -> &'static str {
         Language::Cxx => "cpp",
         Language::Cython => "cython",
     }
-    
 }
 

@@ -5,8 +5,8 @@ set -e
 rename_main_files () {
   dir="${1}"
 
-  mv "${dir}/ewts.js" "${dir}/index.js"
-  mv "${dir}/ewts.d.ts" "${dir}/index.d.ts"
+  mv "${dir}/ewts_wasm.js" "${dir}/index.js"
+  mv "${dir}/ewts_wasm.d.ts" "${dir}/index.d.ts"
 }
 
 build_wasm_and_publish () {

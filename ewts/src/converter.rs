@@ -1,4 +1,4 @@
-use crate::dict::{Con, ConSpec, SUBSCRIPTS, SUPERSCRIPTS};
+use crate::dict::{Con, SUBSCRIPTS, SUPERSCRIPTS};
 use crate::tokenizer::{Token, TokenType, TokenizeResult};
 use std::collections::HashMap;
 
@@ -79,7 +79,7 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                     self.prev_type = TokenType::Other;
                 }
                 Token::ConSpec(s) => {
-                    self.last_con_spec_is_plus = *s == ConSpec::Plus;
+                    self.last_con_spec_is_plus = s.is_plus();
                     self.prev_type = TokenType::ConSpec;
                 }
                 Token::Final(f) => {
