@@ -12,16 +12,24 @@ cdef extern from *:
   uintptr_t create_ewts_converter();
 
   #
-  # # Safety
   # Frees `EwtsConverter`.
-  # Gets pointer returned fron `create_ewts_converter()` fn
+  # Gets pointer to EwtsConverter instance
+  #
+  # # Safety
+  # The `ewts_converter_ptr` should be pointer returned from `create_ewts_converter()` fn.
   #
   void free_ewts_converter(uintptr_t ewts_converter_ptr);
 
   #
-  # # Panics
+  # Converts EWTS-string to Tibetan unicode string.
   #
-  # Panics if arguments are wrong
+  # # Example
+  # ```cpp
+  # // some C++ file
+  # uintptr_t converter_ptr = create_ewts_converter();
+  # const char * converted_str = ewts_to_unicode(converter_ptr, "rgyu ");
+  # // "རྒྱུ་"
+  # ```
   #
   # # Safety
   # The `ewts_converter_ptr` should be pointer returned from `create_ewts_converter()` fn.
@@ -29,6 +37,8 @@ cdef extern from *:
   #
   const char *ewts_to_unicode(uintptr_t ewts_converter_ptr, const char *ewts_src);
 
+  # As a precaution
+  #
   # # Safety
   # The ptr should be a pointer to the string returned from convert function
   void free_ewts_string(const char *ptr);

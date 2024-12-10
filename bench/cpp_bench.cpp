@@ -54,9 +54,12 @@ int main() {
   for (int i = 0; i < ITERATION_COUNT; i++) {
     const char * converted = ewts_to_unicode(converter_ptr, s);
     len += utf8_strlen(converted);
+    free_ewts_string(converted);
   }
 
   auto elapsed_ms = duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - start);
+
+  free_ewts_converter(converter_ptr);
 
   double_t speed = (filesystem::file_size(file_path) * ITERATION_COUNT / 1024.0) / (elapsed_ms.count() / 1000.0);
   cout << "ewts-rs (c++ bindings): speed - " << speed << " Kb/s; ";

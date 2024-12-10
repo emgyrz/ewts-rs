@@ -1,4 +1,4 @@
-/* g++ ../../target/release/libewts.dylib example.cpp -O2 && ./a.out */
+/* g++ ../../target/release/libewts.so example.cpp -O2 && ./a.out */
 
 #include "../ewts-cpp.h"
 #include <string>

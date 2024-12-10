@@ -1,3 +1,25 @@
+//! 
+//! A little wrapper around core rust ewts conversion library, usable in C/C++/Cython code.
+//! Or anywhere a C-code can be called.
+//! See [example](https://github.com/emgyrz/ewts-rs/tree/master/ewts-c/examples)
+//! and [test code](https://github.com/emgyrz/ewts-rs/blob/master/bench/cpp_bench.cpp).
+//! Also see for details [here](https://github.com/emgyrz/ewts-rs/tree/master/ewts-c).
+//!
+//! It is part of set of apps/libs called **ewts-rs**.
+//!
+//! See more [here](https://github.com/emgyrz/ewts-rs)
+//!
+//! # Example
+//! ```cpp
+//! // some C++ file
+//! // ...
+//! uintptr_t converter_ptr = create_ewts_converter();
+//!
+//! const char * converted_str = ewts_to_unicode(converter_ptr, "rgyu ");
+//! // "རྒྱུ་"
+//! // ...
+//! ```
+//!
 use std::ffi::{c_char, CStr, CString};
 
 use ewts::EwtsConverter;
@@ -12,9 +34,11 @@ pub extern "C" fn create_ewts_converter() -> usize {
 }
 
 ///
-/// # Safety
 /// Frees `EwtsConverter`.
-/// Gets pointer returned fron `create_ewts_converter()` fn
+/// Gets pointer to EwtsConverter instance
+///
+/// # Safety
+/// The `ewts_converter_ptr` should be pointer returned from `create_ewts_converter()` fn.
 ///
 #[no_mangle]
 pub unsafe extern "C" fn free_ewts_converter(ewts_converter_ptr: usize) {
@@ -22,9 +46,15 @@ pub unsafe extern "C" fn free_ewts_converter(ewts_converter_ptr: usize) {
 }
 
 ///
-/// # Panics
+/// Converts EWTS-string to Tibetan unicode string.
 ///
-/// Panics if arguments are wrong
+/// # Example
+/// ```cpp
+/// // some C++ file
+/// uintptr_t converter_ptr = create_ewts_converter();
+/// const char * converted_str = ewts_to_unicode(converter_ptr, "rgyu ");
+/// // "རྒྱུ་"
+/// ```
 ///
 /// # Safety
 /// The `ewts_converter_ptr` should be pointer returned from `create_ewts_converter()` fn.
@@ -40,10 +70,11 @@ pub unsafe extern "C" fn ewts_to_unicode(ewts_converter_ptr: usize, ewts_src: *c
     c_string.into_raw()
 }
 
+/// As a precaution
+///
 /// # Safety
 /// The ptr should be a pointer to the string returned from convert function
 #[no_mangle]
 pub unsafe extern "C" fn free_ewts_string(ptr: *const c_char) {
-    // Take the ownership back to rust and drop the owner
     let _ = CString::from_raw(ptr as *mut _);
 }

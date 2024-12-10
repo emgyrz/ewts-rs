@@ -1,13 +1,10 @@
 # ewts-rs
 
 Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols. 
-Written in Rust and can be used, of cource, as Rust library, also as CLI tool and in JS-environment.
-
 
 ![emaho](https://github.com/user-attachments/assets/a1d52bcf-70ea-42b9-87d0-0dee860988d9)
 #### [See demo page](https://emgyrz.github.io/ewts-rs/)
 <br />
-
 
 
 Fully compliant with the standard. See all rules on
@@ -17,7 +14,16 @@ and tests on them here in [rules_test.rs](https://github.com/emgyrz/ewts-rs/blob
 > [!IMPORTANT]  
 > Currently, only the conversion from EWTS to Tibetan Unicode is implemented. The conversion in the opposite direction will be coming soon.
 
+<!--Written in Rust and can be used, of cource, as Rust library, also as CLI tool and in JS-environment.-->
 <br />
+
+
+Can be used:
+- as Rust-library, of course. Because written in Rust - [ewts](#ewts)
+- as command line tool - [ewts-cli](#ewts-cli)
+- in JS-environment (via wasm) - [ewts-wasm](#ewts-wasm)
+- as C dynamic library in C/C++/Cython - [ewts-c](#ewts-c)
+
 **ewts-rs** includes several separate parts:
 
 ## ewts [![Crates.io Version](https://img.shields.io/crates/v/ewts)](https://crates.io/crates/ewts)
@@ -95,6 +101,15 @@ console.log(tibUnicodeStr)
 // "ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ།"
 
 ```
+
+## ewts-c
+
+A little wrapper around core rust ewts conversion library, usable in C/C++/Cython code.
+Or anywhere a C-code can be called.
+See [example](https://github.com/emgyrz/ewts-rs/tree/master/ewts-c/examples)
+and [test code](https://github.com/emgyrz/ewts-rs/blob/master/bench/cpp_bench.cpp).
+Also see docs for details [here](https://github.com/emgyrz/ewts-rs/tree/master/ewts-c).
+
 
 
 ## Speed comparison with other converters
