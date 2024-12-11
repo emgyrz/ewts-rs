@@ -2,9 +2,7 @@ extern crate cbindgen;
 
 use cbindgen::Language;
 
-static PKG_NAME: &str = "ewts";
-
-use std::env;
+use std::{env, path::PathBuf};
 
 fn main() {
     gen(Language::C);
@@ -15,14 +13,16 @@ fn main() {
 fn gen(lang: Language) {
     let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
 
-    cbindgen::Builder::new()
+    let fname = format!("ewts-{}.h", lang_as_str(lang));
+
+    let bindings = cbindgen::Builder::new()
         .with_crate(crate_dir)
         .with_language(lang)
         .generate()
-        .unwrap_or_else(|_| panic!("Unable to generate bindings for {:?}", lang))
-        .write_to_file(format!("{}-{}.h", PKG_NAME, lang_as_str(lang)));
-}
+        .unwrap_or_else(|_| panic!("Unable to generate bindings for {:?}", lang));
 
+    bindings.write_to_file(&fname);
+}
 
 fn lang_as_str(lang: Language) -> &'static str {
     match lang {
@@ -31,4 +31,3 @@ fn lang_as_str(lang: Language) -> &'static str {
         Language::Cython => "cython",
     }
 }
-

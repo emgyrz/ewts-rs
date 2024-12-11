@@ -2,7 +2,7 @@
 name = "ewts-c"
 version = "0.1.0"
 description = "Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols (c lib)"
-categories = ["text-processing", "internationalization", "encoding", "localization", "c"]
+categories = ["text-processing", "internationalization", "encoding", "localization"]
 edition.workspace = true
 authors.workspace = true
 repository.workspace = true
