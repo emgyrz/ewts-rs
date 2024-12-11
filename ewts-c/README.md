@@ -1,6 +1,6 @@
 # ewts-c
 
-A little wrapper around core rust ewts conversion library, usable in C/C++/Cython code.
+A little wrapper around core rust EWTS conversion library, usable in C/C++/Cython code.
 Or anywhere a C-code can be called.
 See [example](https://github.com/emgyrz/ewts-rs/tree/master/ewts-c/examples)
 and [test code](https://github.com/emgyrz/ewts-rs/blob/master/bench/cpp_bench.cpp).

@@ -20,4 +20,5 @@ crate-type = ["cdylib"]
 cbindgen = "0.27.0"
 
 [dependencies]
-ewts = {path = "../ewts"}
+ewts = {version = "0.1.3", path = "../ewts"}
+

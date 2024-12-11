@@ -6,6 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "ewts": "^0.1.3"
+    "ewts": "^0.1.6"
   }
 }
