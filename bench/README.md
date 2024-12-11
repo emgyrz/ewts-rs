@@ -9,6 +9,7 @@ Especially considering that the current implementation is several times faster t
 | Tool                                                                 | Speed               | Launch code                                                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------- |
 | ewts-rs (in rust)                                                    | ~26491 Kb/s (1.00x) | [bench/main.rs](https://github.com/emgyrz/ewts-rs/blob/master/bench/src/main.rs)                   |
+| ewts-rs (c++ bindings)                                               | ~25820 Kb/s (1.02x) | [cpp_bench.cpp](https://github.com/emgyrz/ewts-rs/blob/master/bench/cpp_bench.cpp)                 |
 | [jsewts](https://github.com/buda-base/jsewts)                        | ~2141 Kb/s (12.4x)  | [js_tools_bench.js](https://github.com/emgyrz/ewts-rs/blob/master/bench/js_tools_bench.js)         |
 | [ewts-js](https://github.com/rogerespel/ewts-js)                     | ~1941 Kb/s (13.6x)  | [js_tools_bench.js](https://github.com/emgyrz/ewts-rs/blob/master/bench/js_tools_bench.js)         |
 | ewts-rs (as wasm)                                                    | ~14598 Kb/s (1.81x) | [js_tools_bench.js](https://github.com/emgyrz/ewts-rs/blob/master/bench/js_tools_bench.js)         |
@@ -29,6 +30,8 @@ The following programs should be available from your terminal:
 - python3, pip
 - java
 - curl
+- gcc
+
 
 If you have it all, then clone this repo, go to `bench` directory and simply run `./run_bench.sh`
 ```sh

@@ -24,7 +24,6 @@ Can be used:
 - in JS-environment (via wasm) - [ewts-wasm](#ewts-wasm)
 - as C dynamic library in C/C++/Cython - [ewts-c](#ewts-c)
 
-**ewts-rs** includes several separate parts:
 
 ## ewts [![Crates.io Version](https://img.shields.io/crates/v/ewts)](https://crates.io/crates/ewts)
 Core conversion library.
@@ -123,6 +122,7 @@ Especially considering that the current implementation is several times faster t
 | Tool                                                                 | Speed               | Launch code                                                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------- |
 | ewts-rs (in rust)                                                    | ~26491 Kb/s (1.00x) | [bench/main.rs](https://github.com/emgyrz/ewts-rs/blob/master/bench/src/main.rs)                   |
+| ewts-rs (c++ bindings)                                               | ~25820 Kb/s (1.02x) | [cpp_bench.cpp](https://github.com/emgyrz/ewts-rs/blob/master/bench/cpp_bench.cpp)                 |
 | [jsewts](https://github.com/buda-base/jsewts)                        | ~2141 Kb/s (12.4x)  | [js_tools_bench.js](https://github.com/emgyrz/ewts-rs/blob/master/bench/js_tools_bench.js)         |
 | [ewts-js](https://github.com/rogerespel/ewts-js)                     | ~1941 Kb/s (13.6x)  | [js_tools_bench.js](https://github.com/emgyrz/ewts-rs/blob/master/bench/js_tools_bench.js)         |
 | ewts-rs (as wasm)                                                    | ~14598 Kb/s (1.81x) | [js_tools_bench.js](https://github.com/emgyrz/ewts-rs/blob/master/bench/js_tools_bench.js)         |

@@ -2,12 +2,6 @@
 
 mkdir ./deps
 
-echo "EWTS benchmarks: preparing..."
-cargo build --release
-npm i
-pip install pyewts -t ./deps/
-g++ -O2 ../target/release/libewts.dylib -std=c++20 cpp_bench.cpp -o ./deps/cpp_bench.out
-
 prepare_java () {
   if [ ! -f ./deps/commons-lang3.tar.gz ]; then
     curl --output ./deps/commons-lang3.tar.gz  "https://dlcdn.apache.org//commons/lang/binaries/commons-lang3-3.17.0-bin.tar.gz"
@@ -19,8 +13,23 @@ prepare_java () {
   jar cvf ../EwtsConverter.jar *
   cd -
 }
-prepare_java
 
+prepare_c () {
+  cargo build --release -p ewts-c
+  lib_fname=libewts.so
+  if [[ $OSTYPE == darwin* ]]; then 
+    lib_fname=libewts.dylib;
+  fi
+  g++ -O2 "../target/release/${lib_fname}" -std=c++20 cpp_bench.cpp -o ./deps/cpp_bench.out
+}
+
+
+echo "EWTS benchmarks: preparing..."
+cargo build --release
+npm i
+pip install pyewts -t ./deps/
+prepare_c
+prepare_java
 
 
 echo -e "\nEWTS benchmarks:"

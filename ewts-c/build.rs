@@ -2,7 +2,7 @@ extern crate cbindgen;
 
 use cbindgen::Language;
 
-use std::{env, path::PathBuf};
+use std::env;
 
 fn main() {
     gen(Language::C);
