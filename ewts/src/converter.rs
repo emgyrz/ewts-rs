@@ -133,7 +133,9 @@ impl<'a> EwtsToUnicodeConverter<'a> {
                         true
                     }
                 } else {
-                    self.get_con_at(self.ind - 2)
+                    self.ind
+                        .checked_sub(2)
+                        .and_then(|ind| self.get_con_at(ind))
                         .map(|prev2_con| prev_con_as_sup.can_be_under(&prev2_con))
                         // TODO: tests
                         .unwrap_or(prev_con_as_sup.is_finite)
