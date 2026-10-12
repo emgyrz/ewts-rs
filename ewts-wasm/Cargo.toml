@@ -1,6 +1,6 @@
 [package]
 name = "ewts-wasm"
-version = "0.1.6"
+version = "0.1.7"
 description = "Converter from EWTS (Extended Wylie Transliteration Scheme) to Tibetan Unicode symbols (wasm lib)"
 categories = ["text-processing", "internationalization", "encoding", "localization", "wasm"]
 edition.workspace = true
@@ -15,4 +15,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = "0.2"
-ewts = { path = "../ewts", version = "*" }
+ewts = { path = "../ewts", version = "0.1.4" }

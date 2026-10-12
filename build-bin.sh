@@ -2,8 +2,8 @@
 
 set -e
 
-get_version_of() { 
-  echo $(cargo pkgid -p $1 | cut -d "#" -f2) 
+get_version_of() {
+  echo $(cargo pkgid -p $1 | cut -d "#" -f2)
 }
 pack() {
   trg=$1
@@ -27,7 +27,6 @@ mkdir ./packed_bins
 cp ./ewts-c/*.h "./target/"
 
 pack x86_64-unknown-linux-gnu ewts libewts.so
-pack x86_64-apple-darwin ewts libewts.dylib
-pack aarch64-apple-darwin ewts libewts.dylib
+# pack x86_64-apple-darwin ewts libewts.dylib
+# pack aarch64-apple-darwin ewts libewts.dylib
 pack x86_64-pc-windows-gnu ewts.exe ewts.dll
-
