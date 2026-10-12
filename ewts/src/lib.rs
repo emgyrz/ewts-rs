@@ -144,4 +144,15 @@ grwa drwa phywa
             assert_eq!(converter.ewts_to_unicode(td.0), td.1);
         });
     }
+
+    // `w` after a syllable-initial `b` or `y` is looked up as a possible lower form while only one consonant precedes it; this used to underflow the token index (a panic in debug builds).
+    #[test]
+    fn etu_lower_form_after_first_consonant() {
+        let data = [("bw", "བཝ"), ("yw", "ཡཝ"), ("bwa", "བཝ"), ("bw ", "བཝ་")];
+
+        data.iter().for_each(|td| {
+            let converter = EwtsConverter::create();
+            assert_eq!(converter.ewts_to_unicode(td.0), td.1);
+        });
+    }
 }
